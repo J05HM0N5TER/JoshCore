@@ -2,9 +2,8 @@
 # Created by https://www.gitignore.io/api/c++,windows,visualstudio
 # Edit at https://www.gitignore.io/?templates=c++,windows,visualstudio
 
-!Dependencies
-
-
+!Dependencies/**/*
+!glfw3.lib
 
 ### C++ ###
 # Prerequisites
@@ -33,7 +32,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
