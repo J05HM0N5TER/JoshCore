@@ -7,7 +7,7 @@ void camera::update_projection_view_transform()
 
 camera::camera()
 {
-	this->set_perspective(90, 16 / 9.0f, 0.01, 50.0f);
+	this->set_perspective(90 * 3.14159f / 180, 16 / 9.0f, 0.01, 50.0f);
 	this->set_look_at(glm::vec3(0, 0, 10), glm::vec3(0), glm::vec3(0, 10, 0));
 }
 
