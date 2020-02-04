@@ -2,14 +2,14 @@
 #pragma once
 #ifndef FLY_CAMERA_H
 
-class fly_camera : camera
+class fly_camera : public camera
 {
 private:
-	float speed;
+	float speed = 1.f;
 	glm::vec3 up;
 
 public:
-	void update();
+	void update(float delta_time, GLFWwindow* window);
 	void set_speed(float speed);
 
 };
