@@ -47,32 +47,42 @@ int main() {
 	const uint verticies_size = 8;
 	glm::vec3 verticies[verticies_size]
 	{
-		glm::vec3(-0.5f, 0.5f, 0.0f),
-		glm::vec3(0.5f, 0.5f, 0.0f),
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, -0.5f, 0.0f),
+		glm::vec3(-0.5f, 0.5f, -0.5f),
+		glm::vec3(0.5f, 0.5f, -0.5f),
+		glm::vec3(-0.5f, -0.5f, -0.5f),
+		glm::vec3(0.5f, -0.5f, -0.5f),
 
-		glm::vec3(-0.5f, 0.5f, 1.f),
-		glm::vec3(0.5f, 0.5f, 1.f),
-		glm::vec3(-0.5f, -0.5f, 1.f),
-		glm::vec3(0.5f, -0.5f, 1.f)
+		glm::vec3(-0.5f, 0.5f, 0.5f),
+		glm::vec3(0.5f, 0.5f, 0.5f),
+		glm::vec3(-0.5f, -0.5f, 0.5f),
+		glm::vec3(0.5f, -0.5f, 0.5f)
 	};
-	const uint index_buffer_size = 3*8;
+	const uint index_buffer_size = 3 * 2 * 6;
 	int index_buffer[index_buffer_size]
 	{
+		// Back
 		0,1,2,
 		1,2,3,
 
+		// Front
 		4,5,6,
 		5,6,7,
 
+		// Bottom
 		2,3,6,
-		2,3,7,
+		3,6,7,
 
+		// Right
 		1,3,7,
 		1,5,7,
 
+		// Left 
+		2,0,4,
+		2,4,6,
 
+		// Top
+		4,0,1,
+		4,1,5
 
 	};
 
@@ -193,7 +203,7 @@ int main() {
 	}
 
 
-
+	// Wire-frame mode
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Set background colour
