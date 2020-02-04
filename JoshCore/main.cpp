@@ -44,18 +44,36 @@ int main() {
 
 	/*** Create and 'load' mesh ***/
 
-	const uint verticies_size = 4;
+	const uint verticies_size = 8;
 	glm::vec3 verticies[verticies_size]
 	{
 		glm::vec3(-0.5f, 0.5f, 0.0f),
 		glm::vec3(0.5f, 0.5f, 0.0f),
 		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, -0.5f, 0.0f)
+		glm::vec3(0.5f, -0.5f, 0.0f),
+
+		glm::vec3(-0.5f, 0.5f, 1.f),
+		glm::vec3(0.5f, 0.5f, 1.f),
+		glm::vec3(-0.5f, -0.5f, 1.f),
+		glm::vec3(0.5f, -0.5f, 1.f)
 	};
-	const uint index_buffer_size = 6;
+	const uint index_buffer_size = 3*8;
 	int index_buffer[index_buffer_size]
-	{ 
-		0,1,2,1,2,3 
+	{
+		0,1,2,
+		1,2,3,
+
+		4,5,6,
+		5,6,7,
+
+		2,3,6,
+		2,3,7,
+
+		1,3,7,
+		1,5,7,
+
+
+
 	};
 
 	// Vertex array object
@@ -176,7 +194,7 @@ int main() {
 
 
 
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Set background colour
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -186,6 +204,8 @@ int main() {
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
 		// our game logic and update code goes here!
+
+		model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
 
 		glm::vec4 color = glm::vec4(0.5f);
 
