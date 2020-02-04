@@ -40,6 +40,54 @@ int main() {
 	auto minor = ogl_GetMinorVersion();
 	printf("GL: %i.%i\n", major, minor);
 
+
+
+	/*** Create and 'load' mesh ***/
+
+	const uint verticies_size = 4;
+	glm::vec3 verticies[verticies_size]
+	{
+		glm::vec3(-0.5f, 0.5f, 0.0f),
+		glm::vec3(0.5f, 0.5f, 0.0f),
+		glm::vec3(-0.5f, -0.5f, 0.0f),
+		glm::vec3(0.5f, -0.5f, 0.0f)
+	};
+	const uint index_buffer_size = 6;
+	int index_buffer[index_buffer_size]
+	{ 
+		0,1,2,1,2,3 
+	};
+
+	// Vertex array object
+	uint VAO;
+	// Vertex buffer object
+	uint VBO;
+	uint IBO;
+
+
+
+
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, verticies_size * sizeof(glm::vec3), verticies, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_size * sizeof(int), index_buffer, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+
+
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
 	/** Camera **/
 	fly_camera main_camera;
 	glm::mat4 model = glm::mat4(1.0f);
@@ -129,36 +177,6 @@ int main() {
 
 
 
-	glm::vec3 verticies[]
-	{
-		glm::vec3(-0.5f, 0.5f, 0.0f),
-		glm::vec3(0.5f, 0.5f, 0.0f),
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, 0.5f, 0.0f),
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, -0.5f, 0.0f)
-	};
-
-
-	/*** Create and 'load' mesh ***/
-	// Vertex array object
-	uint VAO;
-	// Vertex buffer object
-	uint VBO;
-
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(glm::vec3), verticies, GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Set background colour
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -188,9 +206,9 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
+		glDrawElements(GL_TRIANGLES, index_buffer_size, GL_UNSIGNED_INT, 0);
 
 		// so does our render code!
 		glfwSwapBuffers(window);
