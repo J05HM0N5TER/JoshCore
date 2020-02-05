@@ -83,7 +83,6 @@ int main() {
 		// Top
 		4,0,1,
 		4,1,5
-
 	};
 
 	// Vertex array object
@@ -204,7 +203,7 @@ int main() {
 
 
 	// Wire-frame mode
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Set background colour
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -226,10 +225,13 @@ int main() {
 
 		auto uniform_location = glGetUniformLocation(shader_program_ID, "projection_view_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(main_camera.get_projection_view()));
+
 		uniform_location = glGetUniformLocation(shader_program_ID, "model_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+
 		uniform_location = glGetUniformLocation(shader_program_ID, "color");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+
 		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
 
 

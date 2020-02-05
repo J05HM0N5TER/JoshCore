@@ -5,7 +5,7 @@
 class fly_camera : public camera
 {
 private:
-	float speed = 1.f;
+	float speed = 10.f;
 	glm::vec3 up;
 
 public:

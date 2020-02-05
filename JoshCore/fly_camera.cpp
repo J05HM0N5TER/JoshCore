@@ -9,7 +9,7 @@ void fly_camera::update(float delta_time, GLFWwindow* window)
 	input.z += glfwGetKey(window, GLFW_KEY_UP);
 	input.z -= glfwGetKey(window, GLFW_KEY_DOWN);
 	 
-	this->set_position(this->get_world_transform()[3] - (input * speed));
+	this->set_position(this->get_world_transform()[3] - (input * speed * delta_time));
 }
 
 void fly_camera::set_speed(float speed)
