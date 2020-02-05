@@ -11,14 +11,19 @@ using uint = unsigned int;
 class shader
 {
 private:
-	// Function to print the error log on the shader program
-	void print_shader_error_log(uint shader_id);
+	// Value that the shaders will have if they don't exist
+	const uint NOT_ASSIGNED = UINT_MAX;
 	// The ID of the vertex shader on the GPU
 	uint vertex_shader_ID = UINT_MAX;
 	// The ID of the fragment shader on the GPU
 	uint fragment_shader_ID = UINT_MAX;
 	// The ID of the shader program on the GPU
 	uint shader_program_ID = UINT_MAX;
+
+	// Function to print the error log on the shader program
+	void check_shader_success();
+
+	uint create_shader(uint shader_type, const char* shader_path);
 
 public:
 	// Constructor
@@ -59,7 +64,6 @@ public:
 		\param value The value that you are setting it to
 	*/
 	void set_uniform_vec4(const char* variable_name, glm::vec4 value);
-
 };
 
 #endif // !SHADER_H
