@@ -101,7 +101,6 @@ int main() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
 
-
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -139,18 +138,13 @@ int main() {
 		// Turn shader on
 		glUseProgram(main_shader.get_shader_program_ID());
 
-		auto uniform_location = glGetUniformLocation(main_shader.get_shader_program_ID(), "projection_view_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(main_camera.get_projection_view()));
+		// Set vaiables
+		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
+		main_shader.set_uniform_mat4("model_matrix", model);
+		main_shader.set_uniform_vec4("color", color);
+		
 
-		uniform_location = glGetUniformLocation(main_shader.get_shader_program_ID(), "model_matrix");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
-
-		uniform_location = glGetUniformLocation(main_shader.get_shader_program_ID(), "color");
-		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
-
-		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
-
-
+		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glBindVertexArray(VAO);
