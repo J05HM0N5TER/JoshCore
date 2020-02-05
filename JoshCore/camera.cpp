@@ -7,7 +7,8 @@ void camera::update_projection_view_transform()
 
 camera::camera()
 {
-	this->set_perspective(90 * 3.14159f / 180, 16 / 9.0f, 0.01, 50.0f);
+	// Set defaults
+	this->set_perspective(90/*degrees*/ * 3.14159f / 180/*Convert to radians*/, 16 / 9.0f/*Widescreen ratio*/, 0.01f, 50.0f);
 	this->set_look_at(glm::vec3(0, 0, 10), glm::vec3(0), glm::vec3(0, 10, 0));
 }
 
@@ -16,9 +17,7 @@ camera::camera(float field_of_view, float aspect_ratio, float near, float far)
 	this->set_perspective(field_of_view, aspect_ratio, near, far);
 }
 
-void camera::update(float delta_time)
-{
-}
+void camera::update(float delta_time) {}
 
 void camera::set_perspective(float field_of_view, float aspect_ratio, float near, float far)
 {
@@ -29,13 +28,16 @@ void camera::set_perspective(float field_of_view, float aspect_ratio, float near
 void camera::set_look_at(const glm::vec3& from, const glm::vec3& to, const glm::vec3& up)
 {
 	view_transform = glm::lookAt(from, to, up);
+	// Set world transform to inverse view_transform because cameras are backwards
 	world_transform = glm::inverse(view_transform);
 	this->update_projection_view_transform();
 }
 
 void camera::set_position(const glm::vec3& position)
 {
+	// Get the vector with the positions and sets it
 	world_transform[3] = glm::vec4(position, 1);
+	// Recalculates the view transform based of of the world_transform
 	view_transform = glm::inverse(world_transform);
 	this->update_projection_view_transform();
 }

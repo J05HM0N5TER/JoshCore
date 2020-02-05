@@ -1,9 +1,8 @@
 #include "shader.h"
 #include "fly_camera.h"
+#include <time.h>
 
 using uint = unsigned int;
-
-void print_shader_error_log(uint shader_id);
 
 int main() {
 	/** Initialise openGL everything **/
@@ -11,10 +10,12 @@ int main() {
 	if (glfwInit() == false)
 		return -1;
 
+	// Create window
 	GLFWwindow* window = glfwCreateWindow(1280, 720,
-		"Computer Graphics",
+		"JoshCore",
 		nullptr, nullptr);
 
+	// Check if window was created corectly
 	if (window == nullptr)
 	{
 		glfwTerminate();
@@ -86,21 +87,27 @@ int main() {
 	uint VBO;
 	uint IBO;
 
-
+	// Get location to assign data to from GPU
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &IBO);
 
+	// Tell GPU what set the following data belongs to
 	glBindVertexArray(VAO);
+
+	// Send vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, verticies_size * sizeof(glm::vec3), verticies, GL_STATIC_DRAW);
+
+	// Send index order data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_size * sizeof(int), index_buffer, GL_STATIC_DRAW);
 
+	// Set vertex settings
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
-
+	// Tell the GPU we are no longer sending it data
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -123,17 +130,25 @@ int main() {
 	// Set background colour
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+	// Used to work out deltatime.
+	ULONGLONG previous = GetTickCount64();
 
 	while (glfwWindowShouldClose(window) == false &&
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
-		// our game logic and update code goes here!
+		// Deltatime
+		ULONGLONG now = GetTickCount64();
+		float delta_time = float(now - previous) / 1000.f;
+		previous = now;
 
+		// Rotate the world
 		model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
 
+		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
 
-		main_camera.update(1 / 60.0f, window);
+		// Update the camera
+		main_camera.update(delta_time, window);
 
 		// Turn shader on
 		glUseProgram(main_shader.get_shader_program_ID());
@@ -147,37 +162,22 @@ int main() {
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Tell the GPU what set of data we are using
 		glBindVertexArray(VAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
+		// Tell GPU to draw the verticies using the index buffer
 		glDrawElements(GL_TRIANGLES, index_buffer_size, GL_UNSIGNED_INT, 0);
 
-		// so does our render code!
+		// Tell GPU to display what it cust calculated
 		glfwSwapBuffers(window);
+		// Refresh input
 		glfwPollEvents();
 	}
 
+	// Cleanup
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &VAO);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
-}
-
-void print_shader_error_log(uint shader_id)
-{
-	// Get the length of the error message
-	GLint log_length = 0;
-	glGetProgramiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
-	// Create the error buffer
-	char* log = new char[log_length];
-	// Copy the error message
-	glGetProgramInfoLog(shader_id, log_length, 0, log);
-
-	// Create the error message
-	std::string error_message(log);
-	error_message += "SHADER_FAILED_TO_COMPILE";
-	printf(error_message.c_str());
-	// Clean up anyway
-	delete[] log;
 }
