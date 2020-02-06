@@ -52,7 +52,7 @@ uint shader::create_shader(uint shader_type, const char* shader_path)
 	// Build!
 	glCompileShader(shader_id);
 
-		check_shader_success();
+	check_shader_success();
 
 	return shader_id;
 }

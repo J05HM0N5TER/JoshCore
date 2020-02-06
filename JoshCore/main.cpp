@@ -1,6 +1,7 @@
 #include "shader.h"
 #include "fly_camera.h"
 #include <time.h>
+#include "mesh.h"
 
 using uint = unsigned int;
 
@@ -40,46 +41,43 @@ int main() {
 
 	/*** Create and 'load' mesh ***/
 
-	const uint verticies_size = 8;
-	glm::vec3 verticies[verticies_size]
-	{
-		glm::vec3(-0.5f, 0.5f, -0.5f),
-		glm::vec3(0.5f, 0.5f, -0.5f),
-		glm::vec3(-0.5f, -0.5f, -0.5f),
-		glm::vec3(0.5f, -0.5f, -0.5f),
+	mesh cube(
+		{
+		vertex(-0.5f, 0.5f, -0.5f),
+		vertex(0.5f, 0.5f, -0.5f),
+		vertex(-0.5f, -0.5f, -0.5f),
+		vertex(0.5f, -0.5f, -0.5f),
 
-		glm::vec3(-0.5f, 0.5f, 0.5f),
-		glm::vec3(0.5f, 0.5f, 0.5f),
-		glm::vec3(-0.5f, -0.5f, 0.5f),
-		glm::vec3(0.5f, -0.5f, 0.5f)
-	};
-	const uint index_buffer_size = 3 * 2 * 6;
-	int index_buffer[index_buffer_size]
-	{
-		// Back
-		0,1,2,
-		1,2,3,
+		vertex(-0.5f, 0.5f, 0.5f),
+		vertex(0.5f, 0.5f, 0.5f),
+		vertex(-0.5f, -0.5f, 0.5f),
+		vertex(0.5f, -0.5f, 0.5f)
+		}, 
+		{
+			// Back
+			0,1,2,
+			1,2,3,
 
-		// Front
-		4,5,6,
-		5,6,7,
+			// Front
+			4,5,6,
+			5,6,7,
 
-		// Bottom
-		2,3,6,
-		3,6,7,
+			// Bottom
+			2,3,6,
+			3,6,7,
 
-		// Right
-		1,3,7,
-		1,5,7,
+			// Right
+			1,3,7,
+			1,5,7,
 
-		// Left 
-		2,0,4,
-		2,4,6,
+			// Left 
+			2,0,4,
+			2,4,6,
 
-		// Top
-		4,0,1,
-		4,1,5
-	};
+			// Top
+			4,0,1,
+			4,1,5
+		});
 
 	// Vertex array object
 	uint VAO;
@@ -97,11 +95,11 @@ int main() {
 
 	// Send vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, verticies_size * sizeof(glm::vec3), verticies, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, cube.get_verticies_length() * vertex::position_size, cube.get_vertex_array(), GL_STATIC_DRAW);
 
 	// Send index order data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_size * sizeof(int), index_buffer, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube.get_index_length() * sizeof(int), cube.get_index_order_array(), GL_STATIC_DRAW);
 
 	// Set vertex settings
 	glEnableVertexAttribArray(0);
@@ -165,8 +163,8 @@ int main() {
 		// Tell the GPU what set of data we are using
 		glBindVertexArray(VAO);
 
-		// Tell GPU to draw the verticies using the index buffer
-		glDrawElements(GL_TRIANGLES, index_buffer_size, GL_UNSIGNED_INT, 0);
+		// Tell GPU to draw the m_verticies using the index buffer
+		glDrawElements(GL_TRIANGLES, cube.get_index_length(), GL_UNSIGNED_INT, 0);
 
 		// Tell GPU to display what it cust calculated
 		glfwSwapBuffers(window);
