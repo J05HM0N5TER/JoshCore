@@ -1,27 +1,22 @@
 #include "shader.h"
 
-void shader::check_shader_success()
+void shader::print_error_log()
 {
-	// Did it compile correctly?
-	GLint success = GL_FALSE;
-	glGetShaderiv(shader_program_ID, GL_COMPILE_STATUS, &success);
-	if (success == GL_FALSE)
-	{
-		// Get the length of the error message
-		GLint log_length = 0;
-		glGetProgramiv(shader_program_ID, GL_INFO_LOG_LENGTH, &log_length);
-		// Create the error buffer
-		char* log = new char[log_length];
-		// Copy the error message
-		glGetProgramInfoLog(shader_program_ID, log_length, 0, log);
+	// Get the length of the error message
+	GLint log_length = 0;
+	glGetProgramiv(shader_program_ID, GL_INFO_LOG_LENGTH, &log_length);
+	// Create the error buffer
+	char* log = new char[log_length];
+	// Copy the error message
+	glGetProgramInfoLog(shader_program_ID, log_length, 0, log);
 
-		// Create the error message
-		std::string error_message(log);
-		error_message += "SHADER_FAILED_TO_COMPILE";
-		printf(error_message.c_str());
-		// Clean up anyway
-		delete[] log;
-	}
+	// Create the error message
+	std::string error_message(log);
+	error_message += "SHADER_FAILED_TO_COMPILE";
+	printf(error_message.c_str());
+	// Clean up anyway
+	delete[] log;
+	throw std::runtime_error("Shader compile failed");
 }
 
 uint shader::create_shader(uint shader_type, const char* shader_path)
@@ -52,7 +47,13 @@ uint shader::create_shader(uint shader_type, const char* shader_path)
 	// Build!
 	glCompileShader(shader_id);
 
-		check_shader_success();
+	// Check compile status
+	GLint success = GL_FALSE;
+	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+	if (success == GL_FALSE)
+	{
+		print_error_log();
+	}
 
 	return shader_id;
 }
@@ -84,15 +85,32 @@ uint shader::link_shader_program()
 	shader_program_ID = glCreateProgram();
 
 	// Attach shaders that exist
-	if (vertex_shader_ID != NOT_ASSIGNED)
-		glAttachShader(shader_program_ID, vertex_shader_ID);
-	if (fragment_shader_ID != NOT_ASSIGNED)
-		glAttachShader(shader_program_ID, fragment_shader_ID);
+	if (vertex_shader_ID == NOT_ASSIGNED)
+		throw std::runtime_error("Vertex shader not found");
+	if (fragment_shader_ID == NOT_ASSIGNED)
+		throw std::runtime_error("Fragment shader not found");
+
+	glAttachShader(shader_program_ID, vertex_shader_ID);
+	glAttachShader(shader_program_ID, fragment_shader_ID);
 
 	// Finally link the two programs
 	glLinkProgram(shader_program_ID);
 
-	check_shader_success();
+	// Check compile status
+	GLint log_length = 0;
+	glGetProgramiv(shader_program_ID, GL_INFO_LOG_LENGTH, &log_length);
+	char* log = new char[log_length];
+
+	//check link error
+	GLint Success = 0;
+	glGetProgramiv(shader_program_ID, GL_LINK_STATUS, &Success);
+
+
+	//print_error_log(shader_program_ID);
+	if (Success == GL_FALSE)
+	{
+		print_error_log();
+	}
 
 	return shader_program_ID;
 }
