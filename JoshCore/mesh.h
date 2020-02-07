@@ -2,6 +2,7 @@
 #ifndef MESH_H
 #include <vector>
 #include "glm.hpp"
+#include "gl_core_4_5.h"
 
 class vertex
 {
@@ -12,8 +13,8 @@ public:
 		position.y = y;
 		position.z = z;
 	}
-	const static int position_ofset = 0;
-	const static int position_size = sizeof(glm::vec3);
+	const static size_t position_ofset = 0;
+	const static size_t position_size = sizeof(glm::vec3);
 
 	glm::vec3 position;
 };
@@ -27,8 +28,8 @@ private:
 public:
 	mesh();
 	mesh(std::vector<vertex> verticies, std::vector<int> index_order);
-	int get_verticies_length();
-	int get_index_length();
+	GLsizei get_verticies_length();
+	GLsizei get_index_length();
 	const void* get_vertex_array();
 	const void* get_index_order_array();
 	const std::vector<vertex>& get_verticies();

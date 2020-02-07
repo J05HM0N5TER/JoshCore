@@ -10,14 +10,14 @@ mesh::mesh(std::vector<vertex> verticies, std::vector<int> index_order)
 	m_index_order = index_order;
 }
 
-int mesh::get_verticies_length()
+GLsizei mesh::get_verticies_length()
 {
-	return m_verticies.size();
+	return GLsizei(m_verticies.size());
 }
 
-int mesh::get_index_length()
+GLsizei mesh::get_index_length()
 {
-	return m_index_order.size();
+	return GLsizei(m_index_order.size());
 }
 
 const void* mesh::get_vertex_array()

@@ -117,7 +117,6 @@ int main() {
 
 
 	shader main_shader;
-	//main_shader.create_shader("../Shaders/simple_vertex.glsl", "../Shaders/simple_frag.glsl");
 	main_shader.create_fragment_shader("../Shaders/simple_frag.glsl");
 	main_shader.create_vertex_shader("../Shaders/simple_vertex.glsl");
 	main_shader.link_shader_program();
@@ -166,7 +165,7 @@ int main() {
 		// Tell GPU to draw the m_verticies using the index buffer
 		glDrawElements(GL_TRIANGLES, cube.get_index_length(), GL_UNSIGNED_INT, 0);
 
-		// Tell GPU to display what it cust calculated
+		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);
 		// Refresh input
 		glfwPollEvents();
