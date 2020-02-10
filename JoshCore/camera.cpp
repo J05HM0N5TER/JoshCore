@@ -2,6 +2,8 @@
 
 void camera::update_projection_view_transform()
 {
+	view_transform = glm::inverse(world_transform);
+
 	this->projection_view_transform = this->projection_transform * this->view_transform;
 }
 
@@ -37,7 +39,7 @@ void camera::set_position(const glm::vec3& position)
 {
 	// Get the vector with the positions and sets it
 	world_transform[3] = glm::vec4(position, 1);
-	// Recalculates the view transform based of of the world_transform
+	// Recalculates the view transform based of the world_transform
 	view_transform = glm::inverse(world_transform);
 	this->update_projection_view_transform();
 }

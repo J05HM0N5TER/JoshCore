@@ -20,9 +20,10 @@ void fly_camera::update(float delta_time)
 	input.y += glfwGetKey(window, GLFW_KEY_Q);
 	// Up
 	input.y -= glfwGetKey(window, GLFW_KEY_E);
-	 
+
 	// Modify the position based off of the input and the new_speed
-	this->set_position(this->get_world_transform()[3] - (input * speed * delta_time));
+	//this->set_position(this->get_world_transform()[3] - (input * speed * delta_time));
+	this->world_transform[3] -= (input * speed * delta_time);
 	/* MOUSE LOOK */
 	double cursor_position_x;
 	double cursor_position_y;
@@ -47,13 +48,11 @@ void fly_camera::update(float delta_time)
 		rotation = glm::rotate(rotation, float(angular_speed * delta_time * -delta_y), glm::vec3(1.0f, 0.0f, 0.0f));
 		// Apply the rotation to the camera
 		world_transform = world_transform * rotation;
-		// Preserve the inverse
-		view_transform = glm::inverse(world_transform);
 		// Update PxV
-		update_projection_view_transform();
 	}
 
 
+	update_projection_view_transform();
 }
 
 void fly_camera::set_speed(float new_speed)
