@@ -6,7 +6,7 @@
 
 class camera
 {
-private:
+protected:
 	// The position the camera is in the world
 	glm::mat4 world_transform;
 	// Settings for what the view from the camera looks like (fov, near plane, far plane)

@@ -132,6 +132,11 @@ int main() {
 	// Used to work out deltatime.
 	ULONGLONG previous = GetTickCount64();
 
+	// Disable mouse
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	if (glfwRawMouseMotionSupported())
+		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
 	while (glfwWindowShouldClose(window) == false &&
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
@@ -147,7 +152,7 @@ int main() {
 		glm::vec4 color = glm::vec4(0.5f);
 
 		// Update the camera
-		main_camera.update(delta_time, window);
+		main_camera.update(delta_time);
 
 		// Turn shader on
 		glUseProgram(main_shader.get_shader_program_ID());
