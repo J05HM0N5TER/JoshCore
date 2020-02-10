@@ -52,31 +52,31 @@ int main() {
 		vertex(0.5f, 0.5f, 0.5f),
 		vertex(-0.5f, -0.5f, 0.5f),
 		vertex(0.5f, -0.5f, 0.5f)
-		}, 
+		},
 		{
 			// Back
 			0,1,2,
-			1,2,3,
+			3,2,1,
 
 			// Front
-			4,5,6,
+			6,5,4,
 			5,6,7,
 
 			// Bottom
 			2,3,6,
-			3,6,7,
+			7,6,3,
 
 			// Right
-			1,3,7,
+			7,3,1,
 			1,5,7,
 
 			// Left 
-			2,0,4,
-			2,4,6,
+			4,0,2,
+			6,4,2,
 
 			// Top
-			4,0,1,
-			4,1,5
+			1,0,4,
+			5,1,4
 		});
 
 	// Vertex array object
@@ -93,6 +93,7 @@ int main() {
 	// Tell GPU what set the following data belongs to
 	glBindVertexArray(VAO);
 
+
 	// Send vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, cube.get_verticies_length() * vertex::position_size, cube.get_vertex_array(), GL_STATIC_DRAW);
@@ -100,6 +101,7 @@ int main() {
 	// Send index order data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube.get_index_length() * sizeof(int), cube.get_index_order_array(), GL_STATIC_DRAW);
+
 
 	// Set vertex settings
 	glEnableVertexAttribArray(0);
@@ -122,7 +124,7 @@ int main() {
 	main_shader.link_shader_program();
 
 	// Wire-frame mode
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
 
 	// Set background colour
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -154,7 +156,7 @@ int main() {
 		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
 		main_shader.set_uniform_mat4("model_matrix", model);
 		main_shader.set_uniform_vec4("color", color);
-		
+
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
