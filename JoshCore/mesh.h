@@ -3,10 +3,12 @@
 #include <vector>
 #include "glm.hpp"
 #include "gl_core_4_5.h"
+#include "shader.h"
 
 class vertex
 {
 public:
+	// What the structure for the vertex is
 	vertex(float x, float y, float z)
 	{
 		position.x = x;
@@ -22,20 +24,33 @@ public:
 class mesh
 {
 private:
+	// The points in the mesh
 	std::vector<vertex> m_verticies;
-	std::vector<int> m_index_order;
+	// How the mesh connects (Index order)
+	std::vector<int> m_indices;
+	// Varibles for drawing on screen
+	uint VAO, VBO, IBO;
+
+	// Sets up the mesh for rendering (sends info to GPU)
+	void setup_mesh();
 
 public:
-	mesh();
+	~mesh();
+	mesh() = delete;
 	mesh(std::vector<vertex> verticies, std::vector<int> index_order);
 	GLsizei get_verticies_length();
-	GLsizei get_index_length();
-	const void* get_vertex_array();
-	const void* get_index_order_array();
+	GLsizei get_indices_length();
+	const void* get_vertices();
+	const void* get_indices_array();
 	const std::vector<vertex>& get_verticies();
-	const std::vector<int> get_index_order();
+	const std::vector<int> get_indices();
 	void set_verticies(std::vector<vertex>& new_vertices);
-	void set_index_order(std::vector<int>& new_index_order);
+	void set_indices(std::vector<int>& new_index_order);
+
+	/*	\brief Renders the mesh on the GPU
+		\param current_shader The shader that is being used for this mesh for rendering
+	*/
+	void draw(shader& current_shader);
 
 };
 

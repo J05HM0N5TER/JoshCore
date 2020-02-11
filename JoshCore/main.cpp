@@ -16,7 +16,7 @@ int main() {
 		"JoshCore",
 		nullptr, nullptr);
 
-	// Check if window was created corectly
+	// Check if window was created correctly
 	if (window == nullptr)
 	{
 		glfwTerminate();
@@ -78,40 +78,7 @@ int main() {
 			1,0,4,
 			5,1,4
 		});
-
-	// Vertex array object
-	uint VAO;
-	// Vertex buffer object
-	uint VBO;
-	uint IBO;
-
-	// Get location to assign data to from GPU
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &IBO);
-
-	// Tell GPU what set the following data belongs to
-	glBindVertexArray(VAO);
-
-
-	// Send vertex data
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, cube.get_verticies_length() * vertex::position_size, cube.get_vertex_array(), GL_STATIC_DRAW);
-
-	// Send index order data
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube.get_index_length() * sizeof(int), cube.get_index_order_array(), GL_STATIC_DRAW);
-
-
-	// Set vertex settings
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
-
-	// Tell the GPU we are no longer sending it data
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
+	
 
 	/** Camera **/
 	fly_camera main_camera;
@@ -129,7 +96,7 @@ int main() {
 	// Set background colour
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// Used to work out deltatime.
+	// Used to work out delta-time.
 	ULONGLONG previous = GetTickCount64();
 
 	// Disable mouse
@@ -140,7 +107,7 @@ int main() {
 	while (glfwWindowShouldClose(window) == false &&
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
-		// Deltatime
+		// Delta-time
 		ULONGLONG now = GetTickCount64();
 		float delta_time = float(now - previous) / 1000.f;
 		previous = now;
@@ -157,20 +124,16 @@ int main() {
 		// Turn shader on
 		glUseProgram(main_shader.get_shader_program_ID());
 
-		// Set vaiables
+		// Set variables
 		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
 		main_shader.set_uniform_mat4("model_matrix", model);
-		main_shader.set_uniform_vec4("color", color);
+		main_shader.set_uniform_vec4("colour", color);
 
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Tell the GPU what set of data we are using
-		glBindVertexArray(VAO);
-
-		// Tell GPU to draw the m_verticies using the index buffer
-		glDrawElements(GL_TRIANGLES, cube.get_index_length(), GL_UNSIGNED_INT, 0);
+		cube.draw(main_shader);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);
@@ -178,9 +141,7 @@ int main() {
 		glfwPollEvents();
 	}
 
-	// Cleanup
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &VAO);
+	// Clean-up
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;

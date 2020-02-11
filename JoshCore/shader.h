@@ -29,14 +29,14 @@ public:
 	// Constructor
 	shader();
 
-	/*	\brief compiles a file to a fragment shader on gpu
+	/*	\brief compiles a file to a fragment shader on GPU
 		\param fragment_shader The path to the fragment shader code file
 		\return The ID of the fragment shader
 		\warning If the compile fails it will print errors to command window 
 	*/
 	uint create_fragment_shader(const char* fragment_shader);
 
-	/*	\brief compiles a file to a vertex shader on gpu
+	/*	\brief compiles a file to a vertex shader on GPU
 		\param fragment_shader The path to the vertex shader code file
 		\return The ID of the vertex shader
 		\warning If the compile fails it will print errors to command window 
@@ -49,7 +49,7 @@ public:
 	uint link_shader_program();
 
 	/*	Return the ID of the created ID
-		\warning If UINT_MAX then the shader progam has not been made yet
+		\warning If UINT_MAX then the shader program has not been made yet
 	*/
 	uint get_shader_program_ID();
 

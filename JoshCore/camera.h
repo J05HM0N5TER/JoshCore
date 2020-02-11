@@ -9,14 +9,14 @@ class camera
 protected:
 	// The position the camera is in the world
 	glm::mat4 world_transform;
-	// Settings for what the view from the camera looks like (fov, near plane, far plane)
+	// Settings for what the view from the camera looks like (FOV, near plane, far plane)
 	glm::mat4 view_transform;
 	// The position and rotation of the camera
 	glm::mat4 projection_transform;
 	// The setting put together
 	glm::mat4 projection_view_transform;
 
-	// Recalculates the projection view off the the view and projection
+	// Recalculates the projection view off the view and projection
 	void update_projection_view_transform();
 
 public:
@@ -25,7 +25,7 @@ public:
 
 	/*	\brief Constructor with needed camera view settings
 		\param field_of_view The field of view for the camera (in radians)
-		\param aspect_ratio the dimentions of the cameras view (width / height)
+		\param aspect_ratio the dimensions of the cameras view (width / height)
 		\param near How far from the camera is the new clipping mask
 		\param far How far from the camera is the far clipping mask
 	*/
@@ -38,7 +38,7 @@ public:
 
 	/*	\brief Sets the settings for view of the camera
 		\param field_of_view The field of view for the camera (in radians)
-		\param aspect_ratio the dimentions of the cameras view (width / height)
+		\param aspect_ratio the dimensions of the cameras view (width / height)
 		\param near How far from the camera is the new clipping mask
 		\param far How far from the camera is the far clipping mask
 	*/
