@@ -1,5 +1,6 @@
 #pragma once
 #ifndef MESH_H
+#define MESH_H
 #include <vector>
 #include "glm.hpp"
 #include "gl_core_4_5.h"

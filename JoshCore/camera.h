@@ -3,6 +3,7 @@
 #include "ext.hpp"
 #include "glfw3.h"
 #ifndef CAMERA_H
+#define CAMERA_H
 
 class camera
 {

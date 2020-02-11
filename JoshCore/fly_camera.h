@@ -1,6 +1,7 @@
 #include "camera.h"
 #pragma once
 #ifndef FLY_CAMERA_H
+#define FLY_CAMERA_H
 
 class fly_camera : public camera
 {
