@@ -9,9 +9,9 @@ void fly_camera::update(float delta_time)
 
 	// Get the input and copy to vector (result is 1 if button is down)
 	// Left
-	input.x += glfwGetKey(window, GLFW_KEY_A);
+	input.x -= glfwGetKey(window, GLFW_KEY_A);
 	// Right
-	input.x -= glfwGetKey(window, GLFW_KEY_D);
+	input.x += glfwGetKey(window, GLFW_KEY_D);
 	// Forwards
 	input.z += glfwGetKey(window, GLFW_KEY_W);
 	// Backwards
@@ -23,7 +23,11 @@ void fly_camera::update(float delta_time)
 
 	// Modify the position based off of the input and the new_speed
 	//this->set_position(this->get_world_transform()[3] - (input * speed * delta_time));
-	this->world_transform[3] -= (input * speed * delta_time);
+
+	glm::vec4 move_direction = -input.z * world_transform[2] + input.x * world_transform[0] + input.y * world_transform[1];
+	glm::normalize(move_direction);
+
+	this->world_transform[3] += (move_direction * speed * delta_time);
 	/* MOUSE LOOK */
 	double cursor_position_x;
 	double cursor_position_y;
