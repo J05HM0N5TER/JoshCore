@@ -2,6 +2,7 @@
 #include "fly_camera.h"
 #include <time.h>
 #include "mesh.h"
+#include "primitives.h"
 
 using uint = unsigned int;
 
@@ -79,6 +80,7 @@ int main() {
 			5,1,4
 		});
 	
+	mesh sphere = primitives::create_uv_sphere();
 
 	/** Camera **/
 	fly_camera main_camera;
@@ -133,7 +135,8 @@ int main() {
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		cube.draw(main_shader);
+		//cube.draw(main_shader);
+		sphere.draw(main_shader);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

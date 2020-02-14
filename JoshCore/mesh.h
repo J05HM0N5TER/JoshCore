@@ -16,6 +16,10 @@ public:
 		position.y = y;
 		position.z = z;
 	}
+	vertex(glm::vec3 a_position)
+	{
+		position = a_position;
+	}
 	const static size_t position_ofset = 0;
 	const static size_t position_size = sizeof(glm::vec3);
 
