@@ -87,7 +87,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW;$(SolutionDir)Dependencies/</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,7 +104,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW;$(SolutionDir)Dependencies/</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +123,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW;$(SolutionDir)Dependencies/</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +144,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/glcore;$(SolutionDir)Dependencies/glm;%(AdditionalIncludeDirectories);$(SolutionDir)Dependencies/glfw/GLFW;$(SolutionDir)Dependencies/</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

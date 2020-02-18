@@ -13,16 +13,20 @@ void mesh::setup_mesh()
 
 	// Send vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, get_verticies_length() * vertex::position_size, get_vertices(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * m_verticies.size(), get_vertices(), GL_STATIC_DRAW);
 
 	// Send index order data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_indices_length() * sizeof(int), get_indices_array(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(int), get_indices_array(), GL_STATIC_DRAW);
 
 
 	// Set vertex settings
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+
+	// Set uv settings
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)( 3 * sizeof(float)));
 
 	// Tell the GPU we are no longer sending it data
 	glBindVertexArray(0);
@@ -86,10 +90,11 @@ void mesh::set_indices(std::vector<int>& new_index_order)
 	m_indices = new_index_order;
 }
 
-void mesh::draw(shader& current_shader)
+void mesh::draw(shader& current_shader, uint& tex)
 {
 	// Tell the GPU what set of data we are using
 	glBindVertexArray(VAO);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	// Tell GPU to draw the m_verticies using the index buffer
 	glDrawElements(GL_TRIANGLES, get_indices_length(), GL_UNSIGNED_INT, 0);
