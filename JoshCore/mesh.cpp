@@ -2,6 +2,15 @@
 
 void mesh::setup_mesh()
 {
+	if (m_verticies.size() == 0)
+	{
+		throw std::runtime_error("Missing mesh verticies");
+	}
+	else if (m_indices.size() == 0)
+	{
+		throw std::runtime_error("Missing mesh indices");
+	}
+
 	// Get location to assign data to from GPU
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -22,16 +31,18 @@ void mesh::setup_mesh()
 
 	// Set vertex settings
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (void*)vertex::position_offset);
 
 	// Set uv settings
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)( 3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (void*)vertex::uv_offset);
 
 	// Tell the GPU we are no longer sending it data
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	setup_complete = true;
 }
 
 mesh::~mesh()
@@ -40,6 +51,10 @@ mesh::~mesh()
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &IBO);
 	glDeleteBuffers(1, &VAO);
+}
+
+mesh::mesh()
+{
 }
 
 mesh::mesh(std::vector<vertex> verticies, std::vector<int> index_order)
@@ -92,6 +107,10 @@ void mesh::set_indices(std::vector<int>& new_index_order)
 
 void mesh::draw(shader& current_shader, uint& tex)
 {
+	if (!setup_complete)
+	{
+		throw std::runtime_error("Mesh not setup");
+	}
 	// Tell the GPU what set of data we are using
 	glBindVertexArray(VAO);
 	glBindTexture(GL_TEXTURE_2D, tex);

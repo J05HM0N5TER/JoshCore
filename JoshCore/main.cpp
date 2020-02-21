@@ -5,41 +5,18 @@
 #include "mesh.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
+#include <crtdbg.h>
 using uint = unsigned int;
 
+int glm_init(const char* window_name, size_t window_width, size_t window_height);
+
 int main() {
-	/** Initialise openGL everything **/
+	// Check for memory leaks
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	if (glfwInit() == false)
-		return -1;
+	glm_init("JoshCore", 1280, 720);
 
-	// Create window
-	GLFWwindow* window = glfwCreateWindow(1280, 720,
-		"JoshCore",
-		nullptr, nullptr);
-
-	// Check if window was created correctly
-	if (window == nullptr)
-	{
-		glfwTerminate();
-		return -2;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
-	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return -3;
-	}
-
-
-	auto major = ogl_GetMajorVersion();
-	auto minor = ogl_GetMinorVersion();
-	printf("GL: %i.%i\n", major, minor);
-
-
+	GLFWwindow* window = glfwGetCurrentContext();
 
 	/*** Create and 'load' mesh ***/
 
@@ -83,14 +60,14 @@ int main() {
 
 	mesh square(
 		{
-			vertex(-0.5f, 0.5f, 0, 0, 1),
-			vertex(0.5f, 0.5f, 0, 1,1),
-			vertex(-0.5f, -0.5f, 0, 0,0),
-			vertex(0.5f, -0.5f, 0,1,0)
+			vertex({ -0.5f, 0.5f, 0 }, { 0, 0 }),
+			vertex({ 0.5f, 0.5f, 0 }, { 1,0 }),
+			vertex({ -0.5f, -0.5f, 0 }, { 0, 1 }),
+			vertex({ 0.5f, -0.5f, 0 },{ 1, 1 })
 		},
 		{
 			1, 2, 0,	// first triangle
-		3, 2, 1		// second triangle
+			3, 2, 1		// second triangle
 		});
 
 	uint m_texture;
@@ -99,7 +76,7 @@ int main() {
 
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load("../images/test.jpg", &width, &height, &nrChannels, 0);
-	std::cout <<  " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
+	std::cout << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
 
 	if (data)
 	{
@@ -182,5 +159,41 @@ int main() {
 	// Clean-up
 	glfwDestroyWindow(window);
 	glfwTerminate();
+	return 0;
+}
+
+int glm_init(const char* window_name, size_t window_width, size_t window_height)
+{
+	/** Initialise openGL everything **/
+
+	if (glfwInit() == false)
+		return -1;
+
+	// Create window
+	GLFWwindow* window = glfwCreateWindow(window_width, window_height,
+		window_name,
+		nullptr, nullptr);
+
+	// Check if window was created correctly
+	if (window == nullptr)
+	{
+		glfwTerminate();
+		return -2;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
+	{
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		return -3;
+	}
+
+
+	auto major = ogl_GetMajorVersion();
+	auto minor = ogl_GetMinorVersion();
+	printf("GL: %i.%i\n", major, minor);
+
 	return 0;
 }
