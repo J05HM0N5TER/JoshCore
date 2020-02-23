@@ -10,16 +10,26 @@ class vertex
 {
 public:
 	// What the structure for the vertex is
-	vertex(float x, float y, float z)
+	vertex(float x, float y, float z, float u, float v)
 	{
 		position.x = x;
 		position.y = y;
 		position.z = z;
+		uv.x = u;
+		uv.y = v;
 	}
-	const static size_t position_ofset = 0;
+	vertex(glm::vec3 position, glm::vec2 uv)
+	{
+		this->position = position;
+		this->uv = uv;
+	}
+	const static size_t position_offset = 0;
 	const static size_t position_size = sizeof(glm::vec3);
+	const static size_t uv_size = sizeof(glm::vec2);
+	const static size_t uv_offset = position_size + position_offset;
 
 	glm::vec3 position;
+	glm::vec2 uv;
 };
 
 class mesh
@@ -29,15 +39,17 @@ private:
 	std::vector<vertex> m_verticies;
 	// How the mesh connects (Index order)
 	std::vector<int> m_indices;
-	// Varibles for drawing on screen
+	// Variables for drawing on screen
 	uint VAO, VBO, IBO;
 
 	// Sets up the mesh for rendering (sends info to GPU)
 	void setup_mesh();
 
+	bool setup_complete = false;
+
 public:
 	~mesh();
-	mesh() = delete;
+	mesh();
 	mesh(std::vector<vertex> verticies, std::vector<int> index_order);
 	GLsizei get_verticies_length();
 	GLsizei get_indices_length();
@@ -51,7 +63,7 @@ public:
 	/*	\brief Renders the mesh on the GPU
 		\param current_shader The shader that is being used for this mesh for rendering
 	*/
-	void draw(shader& current_shader);
+	void draw(shader& current_shader, uint& tex);
 
 };
 
