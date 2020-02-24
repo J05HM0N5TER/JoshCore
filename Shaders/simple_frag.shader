@@ -8,4 +8,5 @@ out vec4 final_color;
 void main()
 {
     final_color = texture(diffuse_texture, final_texture_coodinates);
+    //final_color = vec4(final_texture_coodinates.x, final_texture_coodinates.y, 0.0, 1.0);
 }

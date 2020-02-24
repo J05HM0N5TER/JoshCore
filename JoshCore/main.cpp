@@ -60,11 +60,11 @@ int main() {
 
 	mesh square(
 		{
-			vertex({ -0.5f, 0.5f, 0 }, { 0, 0 }),
-			vertex({ 0.5f, 0.5f, 0 }, { 1,0 }),
-			vertex({ -0.5f, -0.5f, 0 }, { 0, 1 }),
-			vertex({ 0.5f, -0.5f, 0 },{ 1, 1 })
-		},
+			vertex({ -0.5f, 0.5f, 0 }, { 0, 0, 1 }, { 0, 0 }),
+			vertex({ 0.5f, 0.5f, 0 }, { 0, 0, 1 }, { 1,0 }),
+			vertex({ -0.5f, -0.5f, 0 }, { 0, 0, 1 }, { 0, 1 }),
+			vertex({ 0.5f, -0.5f, 0 }, { 0, 0, 1 }, { 1, 1 })
+		}, 
 		{
 			1, 2, 0,	// first triangle
 			3, 2, 1		// second triangle
@@ -100,8 +100,8 @@ int main() {
 
 
 	shader main_shader;
-	main_shader.create_fragment_shader("../Shaders/simple_frag.glsl");
-	main_shader.create_vertex_shader("../Shaders/simple_vertex.glsl");
+	main_shader.create_fragment_shader("../Shaders/simple_frag.shader");
+	main_shader.create_vertex_shader("../Shaders/simple_vertex.shader");
 	main_shader.link_shader_program();
 
 	// Wire-frame mode

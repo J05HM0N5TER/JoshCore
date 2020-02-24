@@ -9,26 +9,22 @@
 class vertex
 {
 public:
-	// What the structure for the vertex is
-	vertex(float x, float y, float z, float u, float v)
-	{
-		position.x = x;
-		position.y = y;
-		position.z = z;
-		uv.x = u;
-		uv.y = v;
-	}
-	vertex(glm::vec3 position, glm::vec2 uv)
-	{
-		this->position = position;
-		this->uv = uv;
-	}
-	const static size_t position_offset = 0;
-	const static size_t position_size = sizeof(glm::vec3);
-	const static size_t uv_size = sizeof(glm::vec2);
-	const static size_t uv_offset = position_size + position_offset;
+	
+	vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv)
+		: position{ position, 0 }, normal{ normal, 0 }, uv{ uv }
+	{	}
 
-	glm::vec3 position;
+	const static size_t position_size = sizeof(glm::vec4);
+	const static size_t position_offset = 0;
+
+	const static size_t normal_size = sizeof(glm::vec4);
+	const static size_t normal_offset = position_size + position_offset;
+
+	const static size_t uv_size = sizeof(glm::vec2);
+	const static size_t uv_offset = normal_size + normal_offset;
+
+	glm::vec4 position;
+	glm::vec4 normal;
 	glm::vec2 uv;
 };
 

@@ -99,7 +99,6 @@ uint shader::link_shader_program()
 	// Check compile status
 	GLint log_length = 0;
 	glGetProgramiv(shader_program_ID, GL_INFO_LOG_LENGTH, &log_length);
-	char* log = new char[log_length];
 
 	//check link error
 	GLint Success = 0;
