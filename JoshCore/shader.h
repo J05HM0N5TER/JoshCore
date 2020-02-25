@@ -22,7 +22,8 @@ private:
 	uint shader_program_ID = UINT_MAX;
 
 	// Function to print the error log on the shader program
-	void print_error_log();
+	void print_program_error_log();
+	void print_shader_error_log(uint shader_ID);
 
 	uint create_shader(uint shader_type, const char* shader_path);
 

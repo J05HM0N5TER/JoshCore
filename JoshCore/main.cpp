@@ -20,44 +20,6 @@ int main() {
 
 	/*** Create and 'load' mesh ***/
 
-	//mesh cube(
-	//	{
-	//	vertex(-0.5f, 0.5f, -0.5f),
-	//	vertex(0.5f, 0.5f, -0.5f),
-	//	vertex(-0.5f, -0.5f, -0.5f),
-	//	vertex(0.5f, -0.5f, -0.5f),
-
-	//	vertex(-0.5f, 0.5f, 0.5f),
-	//	vertex(0.5f, 0.5f, 0.5f),
-	//	vertex(-0.5f, -0.5f, 0.5f),
-	//	vertex(0.5f, -0.5f, 0.5f)
-	//	},
-	//	{
-	//		// Back
-	//		0,1,2,
-	//		3,2,1,
-
-	//		// Front
-	//		6,5,4,
-	//		5,6,7,
-
-	//		// Bottom
-	//		2,3,6,
-	//		7,6,3,
-
-	//		// Right
-	//		7,3,1,
-	//		1,5,7,
-
-	//		// Left 
-	//		4,0,2,
-	//		6,4,2,
-
-	//		// Top
-	//		1,0,4,
-	//		5,1,4
-	//	});
-
 	mesh square(
 		{
 			vertex({ -0.5f, 0.5f, 0 }, { 0, 0, 1 }, { 0, 0 }),
@@ -100,8 +62,8 @@ int main() {
 
 
 	shader main_shader;
-	main_shader.create_fragment_shader("../Shaders/simple_frag.shader");
-	main_shader.create_vertex_shader("../Shaders/simple_vertex.shader");
+	main_shader.create_fragment_shader("../Shaders/phong_frag.shader");
+	main_shader.create_vertex_shader("../Shaders/phong_vert.shader");
 	main_shader.link_shader_program();
 
 	// Wire-frame mode

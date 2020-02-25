@@ -1,6 +1,6 @@
 #include "shader.h"
 
-void shader::print_error_log()
+void shader::print_program_error_log()
 {
 	// Get the length of the error message
 	GLint log_length = 0;
@@ -9,6 +9,25 @@ void shader::print_error_log()
 	char* log = new char[log_length];
 	// Copy the error message
 	glGetProgramInfoLog(shader_program_ID, log_length, 0, log);
+
+	// Create the error message
+	std::string error_message(log);
+	error_message += "SHADER_PROGRAM_FAILED_TO_COMPILE";
+	printf(error_message.c_str());
+	// Clean up anyway
+	delete[] log;
+	throw std::runtime_error("Shader program compile failed");
+}
+
+void shader::print_shader_error_log(uint shader_ID)
+{
+	// Get the length of the error message
+	GLint log_length = 0;
+	glGetShaderiv(shader_ID, GL_INFO_LOG_LENGTH, &log_length);
+	// Create the error buffer
+	char* log = new char[log_length];
+	// Copy the error message
+	glGetShaderInfoLog(shader_ID, log_length, 0, log);
 
 	// Create the error message
 	std::string error_message(log);
@@ -52,7 +71,7 @@ uint shader::create_shader(uint shader_type, const char* shader_path)
 	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
 	if (success == GL_FALSE)
 	{
-		print_error_log();
+		print_shader_error_log(shader_id);
 	}
 
 	return shader_id;
@@ -105,10 +124,10 @@ uint shader::link_shader_program()
 	glGetProgramiv(shader_program_ID, GL_LINK_STATUS, &Success);
 
 
-	//print_error_log(shader_program_ID);
+	//print_program_error_log(shader_program_ID);
 	if (Success == GL_FALSE)
 	{
-		print_error_log();
+		print_program_error_log();
 	}
 
 	return shader_program_ID;

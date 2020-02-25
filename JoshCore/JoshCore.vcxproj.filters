@@ -52,10 +52,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\simple_vertex.shader">
+    <None Include="..\Shaders\phong_frag.shader">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\simple_frag.shader">
+    <None Include="..\Shaders\phong_vert.shader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

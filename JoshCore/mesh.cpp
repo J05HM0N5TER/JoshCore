@@ -30,12 +30,17 @@ void mesh::setup_mesh()
 
 
 	// Set vertex settings
+	// Position
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (void*)vertex::position_offset);
 
-	// Set uv settings
+	// Normal
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (void*)vertex::uv_offset);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(vertex), (void*)vertex::normal_offset);
+
+	// UV
+	/*glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (void*)vertex::uv_offset);*/
 
 	// Tell the GPU we are no longer sending it data
 	glBindVertexArray(0);
