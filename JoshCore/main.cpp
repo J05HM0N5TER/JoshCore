@@ -62,8 +62,8 @@ int main() {
 
 
 	shader main_shader;
-	main_shader.create_fragment_shader("../Shaders/phong_frag.shader");
-	main_shader.create_vertex_shader("../Shaders/phong_vert.shader");
+	main_shader.create_fragment_shader("../Shaders/phong.frag");
+	main_shader.create_vertex_shader("../Shaders/phong.vert");
 	main_shader.link_shader_program();
 
 	// Wire-frame mode
