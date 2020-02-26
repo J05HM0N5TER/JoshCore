@@ -126,6 +126,11 @@ int main() {
 		main_shader.set_uniform_vec4("colour", color);
 		main_shader.set_uniform_mat3("NormalMatrix", glm::inverseTranspose(glm::mat3(model)));
 
+		main_shader.set_uniform_vec3("Ka", glm::vec3(0));
+		main_shader.set_uniform_vec3("Kd", { 0.27296f, 0.70272f, 0.6212f });
+		main_shader.set_uniform_vec3("Ks", { 0.35f, 0.35f, 0.35f });
+		
+
 
 
 		// Clear screen

@@ -28,6 +28,22 @@ private:
 	uint create_shader(uint shader_type, const char* shader_path);
 
 public:
+
+	// Used to specify what data type in the set_uniform
+	static enum class UNIFORM_TYPE : char
+	{
+		FLOAT,
+		VEC2,
+		VEC3,
+		VEC4,
+		MAT2,
+		MAT3,
+		MAT4,
+		INT,
+		UINT,
+		BOOL
+	};
+
 	// Constructor
 	shader();
 
@@ -59,25 +75,38 @@ public:
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
-	void set_uniform_mat3(const char* variable_name, glm::mat3 value);
+	void set_uniform_mat3(const char* variable_name, const glm::mat3& value);
 
 	/*	\brief Sets a matrix 4 on the shader program
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
-	void set_uniform_mat4(const char* variable_name, glm::mat4 value);
+	void set_uniform_mat4(const char* variable_name, const glm::mat4& value);
+
+	/*	\brief Sets a float on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to
+	*/
+	void set_uniform_float(const char* variable_name, float value);
 	
 	/*	\brief Sets a vector 3 on the shader program
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
-	void set_uniform_vec3(const char* variable_name, glm::vec3 value);
+	void set_uniform_vec3(const char* variable_name, const glm::vec3& value);
 
 	/*	\brief Sets a vector 4 on the shader program
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
-	void set_uniform_vec4(const char* variable_name, glm::vec4 value);
+	void set_uniform_vec4(const char* variable_name, const glm::vec4& value);
+
+	/*	\brief Sets a variable on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to cast to a GLvoid*
+		\param varible_type The data type that the variable you are setting is
+	*/
+	void set_uniform(const char* variable_name, const GLvoid* value, UNIFORM_TYPE varible_type);
 };
 
 #endif // !SHADER_H

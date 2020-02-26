@@ -138,26 +138,69 @@ uint shader::get_shader_program_ID()
 	return shader_program_ID;
 }
 
-void shader::set_uniform_mat3(const char* variable_name, glm::mat3 value)
+void shader::set_uniform_mat3(const char* variable_name, const glm::mat3& value)
 {
-	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
-	glUniformMatrix3fv(uniform_location, 1, false, glm::value_ptr(value));
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::MAT3);
 }
 
-void shader::set_uniform_mat4(const char* variable_name, glm::mat4 value)
+void shader::set_uniform_mat4(const char* variable_name, const glm::mat4& value)
 {
-	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
-	glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(value));
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::MAT4);
 }
 
-void shader::set_uniform_vec3(const char* variable_name, glm::vec3 value)
+void shader::set_uniform_float(const char* variable_name, float value)
 {
-	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
-	glUniform3fv(uniform_location, 1, glm::value_ptr(value));
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::FLOAT);
 }
 
-void shader::set_uniform_vec4(const char* variable_name, glm::vec4 value)
+void shader::set_uniform_vec3(const char* variable_name, const glm::vec3& value)
 {
+	set_uniform(variable_name, (GLvoid*)&value, shader::UNIFORM_TYPE::VEC3);
+}
+
+void shader::set_uniform_vec4(const char* variable_name, const glm::vec4& value)
+{
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::VEC4);
+}
+
+void shader::set_uniform(const char* variable_name, const GLvoid* value, UNIFORM_TYPE varible_type)
+{
+	// GEt the uniform location to use to set the variable
 	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
-	glUniform4fv(uniform_location, 1, glm::value_ptr(value));
+
+	// Set the viable type based on when the paramiter specifies
+	switch (varible_type)
+	{
+	case shader::UNIFORM_TYPE::FLOAT:
+		glUniform1fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::VEC2:
+		glUniform2fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::VEC3:
+		glUniform3fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::VEC4:
+		glUniform4fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::MAT2:
+		glUniformMatrix2fv(uniform_location, 1, false, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::MAT3:
+		glUniformMatrix3fv(uniform_location, 1, false, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::MAT4:
+		glUniformMatrix4fv(uniform_location, 1, false, (GLfloat*)value);
+		break;
+	// Bool is transferred like an int and when it is 0 it is false
+	case shader::UNIFORM_TYPE::BOOL:
+	case shader::UNIFORM_TYPE::INT:
+		glUniform1i(uniform_location, GLint(value));
+		break;
+	case shader::UNIFORM_TYPE::UINT:
+		glUniform1ui(uniform_location, GLuint(value));
+		break;
+	default:
+		break;
+	}
 }
