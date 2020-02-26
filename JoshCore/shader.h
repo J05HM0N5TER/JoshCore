@@ -59,7 +59,19 @@ public:
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
+	void set_uniform_mat3(const char* variable_name, glm::mat3 value);
+
+	/*	\brief Sets a matrix 4 on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to
+	*/
 	void set_uniform_mat4(const char* variable_name, glm::mat4 value);
+	
+	/*	\brief Sets a vector 3 on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to
+	*/
+	void set_uniform_vec3(const char* variable_name, glm::vec3 value);
 
 	/*	\brief Sets a vector 4 on the shader program
 		\param variable_name The name of the variable that you are setting

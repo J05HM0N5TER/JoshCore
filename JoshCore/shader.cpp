@@ -138,10 +138,22 @@ uint shader::get_shader_program_ID()
 	return shader_program_ID;
 }
 
+void shader::set_uniform_mat3(const char* variable_name, glm::mat3 value)
+{
+	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
+	glUniformMatrix3fv(uniform_location, 1, false, glm::value_ptr(value));
+}
+
 void shader::set_uniform_mat4(const char* variable_name, glm::mat4 value)
 {
 	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
 	glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(value));
+}
+
+void shader::set_uniform_vec3(const char* variable_name, glm::vec3 value)
+{
+	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
+	glUniform3fv(uniform_location, 1, glm::value_ptr(value));
 }
 
 void shader::set_uniform_vec4(const char* variable_name, glm::vec4 value)

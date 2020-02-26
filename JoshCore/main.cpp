@@ -10,6 +10,13 @@ using uint = unsigned int;
 
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
 
+struct light
+{
+	glm::vec3 direction;
+	glm::vec3 diffuse; 
+	glm::vec3 specular;
+};
+
 int main() {
 	// Check for memory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -20,17 +27,23 @@ int main() {
 
 	/*** Create and 'load' mesh ***/
 
-	mesh square(
+	mesh quad(
 		{
-			vertex({ -0.5f, 0.5f, 0 }, { 0, 0, 1 }, { 0, 0 }),
-			vertex({ 0.5f, 0.5f, 0 }, { 0, 0, 1 }, { 1,0 }),
-			vertex({ -0.5f, -0.5f, 0 }, { 0, 0, 1 }, { 0, 1 }),
-			vertex({ 0.5f, -0.5f, 0 }, { 0, 0, 1 }, { 1, 1 })
+			vertex({ -0.5f, 0,  0.5f }, { 0, 0, 1 }, { 0, 0 }),
+			vertex({  0.5f, 0,  0.5f }, { 0, 0, 1 }, { 1, 0 }),
+			vertex({ -0.5f, 0, -0.5f }, { 0, 0, 1 }, { 0, 1 }),
+			vertex({  0.5f, 0, -0.5f }, { 0, 0, 1 }, { 1, 1 })
 		}, 
 		{
 			1, 2, 0,	// first triangle
 			3, 2, 1		// second triangle
 		});
+
+	/*** Lights ***/
+	light main_light;
+	main_light.diffuse = { 1, 1, 0 };
+	main_light.specular = { 1, 1, 0 };
+	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
 
 	uint m_texture;
 	glGenTextures(1, &m_texture);
@@ -58,6 +71,7 @@ int main() {
 
 	/** Camera **/
 	fly_camera main_camera;
+	//main_camera.set_position({ 0, 2, 2 });
 	glm::mat4 model = glm::mat4(1.0f);
 
 
@@ -73,7 +87,8 @@ int main() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Used to work out delta-time.
-	ULONGLONG previous = GetTickCount64();
+	double previous = glfwGetTime();
+
 
 	// Disable mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -84,10 +99,11 @@ int main() {
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
 		// Delta-time
-		ULONGLONG now = GetTickCount64();
-		float delta_time = float(now - previous) / 1000.f;
+		double now = glfwGetTime();
+		float delta_time = float(now - previous);
 		previous = now;
 
+		main_light.direction = glm::normalize(glm::vec3(glm::cos(now / 500 * 2 ), glm::sin(now / 500 * 2), 0));
 		// Rotate the world
 		model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
 
@@ -101,16 +117,22 @@ int main() {
 		glUseProgram(main_shader.get_shader_program_ID());
 
 		// Set variables
+		main_shader.set_uniform_vec3("Ia", ambient_light);
+		main_shader.set_uniform_vec3("Id", main_light.diffuse);
+		main_shader.set_uniform_vec3("Is", main_light.specular);
+		main_shader.set_uniform_vec3("LightDirection", main_light.direction);
 		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
 		main_shader.set_uniform_mat4("model_matrix", model);
 		main_shader.set_uniform_vec4("colour", color);
+		main_shader.set_uniform_mat3("NormalMatrix", glm::inverseTranspose(glm::mat3(model)));
+
 
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//cube.draw(main_shader);
-		square.draw(main_shader, m_texture);
+		quad.draw(main_shader, m_texture);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

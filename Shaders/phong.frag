@@ -3,6 +3,10 @@
 
 in vec3 vNormal;
 
+uniform vec3 Ia; // ambient light colour
+uniform vec3 Id; // diffuse light colour 
+uniform vec3 Is; // specular light colour uniform vec3 LightDirection;
+
 uniform vec3 LightDirection;
 
 out vec4 FragColour;
@@ -16,6 +20,9 @@ void main()
 	// calculate lambert term (negate light direction)
 	float lambertTerm = max(0, min(1, dot(N, -L)));
 
-	// output lambert as grayscale
-	FragColour = vec4(lambertTerm, lambertTerm, lambertTerm, 1);
+	// calculate diffuse 
+	vec3 diffuse = Id * lambertTerm;
+
+	// output final colour
+	FragColour = vec4( diffuse, 1 );
 }

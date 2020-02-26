@@ -36,7 +36,7 @@ private:
 	// How the mesh connects (Index order)
 	std::vector<int> m_indices;
 	// Variables for drawing on screen
-	uint VAO, VBO, IBO;
+	uint VAO, VBO, IBO = UINT_MAX;
 
 	// Sets up the mesh for rendering (sends info to GPU)
 	void setup_mesh();
