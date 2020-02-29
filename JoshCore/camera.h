@@ -57,6 +57,11 @@ public:
 	*/
 	void set_position(const glm::vec3 &position);
 
+	/*	\brief Gets the current position of the camera
+		\return The camera position in world space
+	*/
+	const glm::vec3& get_position();
+
 	// \return The transform for where is world space the camera is positioned
 	const glm::mat4& get_world_transform();
 

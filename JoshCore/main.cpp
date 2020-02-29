@@ -6,6 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #include <crtdbg.h>
+#include "OBJMesh.h"
 using uint = unsigned int;
 
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
@@ -38,6 +39,9 @@ int main() {
 			1, 2, 0,	// first triangle
 			3, 2, 1		// second triangle
 		});
+
+	aie::OBJMesh dragon;
+	dragon.load("../Models/Dragon.obj");
 
 	/*** Lights ***/
 	light main_light;
@@ -86,6 +90,10 @@ int main() {
 	// Set background colour
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
 	// Used to work out delta-time.
 	double previous = glfwGetTime();
 
@@ -103,9 +111,9 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		main_light.direction = glm::normalize(glm::vec3(glm::cos(now / 500 * 2 ), glm::sin(now / 500 * 2), 0));
+		main_light.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
 		// Rotate the world
-		model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
+		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
@@ -129,6 +137,10 @@ int main() {
 		main_shader.set_uniform_vec3("Ka", glm::vec3(0));
 		main_shader.set_uniform_vec3("Kd", { 0.27296f, 0.70272f, 0.6212f });
 		main_shader.set_uniform_vec3("Ks", { 0.35f, 0.35f, 0.35f });
+		main_shader.set_uniform_float("specularPower", 34.f);
+
+		main_shader.set_uniform_vec3("cameraPosition",
+			main_camera.get_position());
 		
 
 
@@ -138,6 +150,7 @@ int main() {
 
 		//cube.draw(main_shader);
 		quad.draw(main_shader, m_texture);
+		dragon.draw();
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

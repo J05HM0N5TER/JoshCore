@@ -44,6 +44,11 @@ void camera::set_position(const glm::vec3& position)
 	this->update_projection_view_transform();
 }
 
+const glm::vec3& camera::get_position()
+{
+	return world_transform[3];
+}
+
 const glm::mat4& camera::get_world_transform()
 {
 	return this->world_transform;
