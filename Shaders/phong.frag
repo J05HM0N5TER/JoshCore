@@ -16,23 +16,24 @@ uniform float specularPower; // material specular power
 
 uniform vec3 cameraPosition;
 
+// The colour of the pixel
 out vec4 FragColour;
 
 void main() 
 {
 	// ensure normal and light direction are normalised
-	vec3 N = normalize(vNormal);
-	vec3 L = normalize(LightDirection);
+	vec3 normal = normalize(vNormal);
+	vec3 light = normalize(LightDirection);
 
 	// calculate lambert term (negate light direction)
-	float lambertTerm = max(0, min(1, dot(N, -L)));
+	float lambertTerm = max(0, min(1, dot(normal, -light)));
 
 	// calculate view vector and reflection vector 
-	vec3 V = normalize(cameraPosition - vPosition.xyz); 
-	vec3 R = reflect( L, N ); 
+	vec3 direction = normalize(cameraPosition - vPosition.xyz); 
+	vec3 reflection = reflect( light, -normal ); 
 	
 	// calculate specular term 
-	float specularTerm = pow( max( 0, dot( R, V ) ), /* 50.0 */specularPower );
+	float specularTerm = pow( max( 0, dot( direction, reflection ) ), /* 50.0 */specularPower );
 
 	// calculate each colour property
 	vec3 ambient = Ia * Ka;

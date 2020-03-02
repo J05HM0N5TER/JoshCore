@@ -11,15 +11,12 @@ uniform mat4 model_matrix;
 out vec4 vPosition;
 out vec3 vNormal;
 
-// we need this matrix to transform the position 
-uniform mat4 ModelMatrix;
-
 // we need this matrix to transform the normal
 uniform mat3 NormalMatrix;
 
 void main()
 {
-    vPosition = ModelMatrix * local_position;
+    vPosition = model_matrix * local_position;
     vNormal = NormalMatrix * normal.xyz;
     gl_Position = (projection_view_matrix * model_matrix) * local_position;
 }

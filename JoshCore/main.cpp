@@ -46,7 +46,7 @@ int main() {
 	/*** Lights ***/
 	light main_light;
 	main_light.diffuse = { 1, 1, 0 };
-	main_light.specular = { 1, 1, 0 };
+	main_light.specular = { 1, 1, 1 };
 	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
 
 	uint m_texture;
@@ -111,7 +111,7 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		main_light.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
+		//main_light.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
 		// Rotate the world
 		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
 
@@ -139,8 +139,7 @@ int main() {
 		main_shader.set_uniform_vec3("Ks", { 0.35f, 0.35f, 0.35f });
 		main_shader.set_uniform_float("specularPower", 34.f);
 
-		main_shader.set_uniform_vec3("cameraPosition",
-			main_camera.get_position());
+		main_shader.set_uniform_vec3("cameraPosition",	main_camera.get_world_transform()[3]);
 		
 
 
