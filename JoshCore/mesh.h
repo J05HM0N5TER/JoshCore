@@ -47,19 +47,19 @@ public:
 	~mesh();
 	mesh();
 	mesh(std::vector<vertex> verticies, std::vector<int> index_order);
-	GLsizei get_verticies_length();
-	GLsizei get_indices_length();
-	const void* get_vertices();
-	const void* get_indices_array();
-	const std::vector<vertex>& get_verticies();
-	const std::vector<int> get_indices();
+	GLsizei get_verticies_length() const;
+	GLsizei get_indices_length() const;
+	const void* get_vertices() const;
+	const void* get_indices_array() const;
+	const std::vector<vertex>& get_verticies() const;
+	const std::vector<int> get_indices() const;
 	void set_verticies(std::vector<vertex>& new_vertices);
 	void set_indices(std::vector<int>& new_index_order);
 
 	/*	\brief Renders the mesh on the GPU
 		\param current_shader The shader that is being used for this mesh for rendering
 	*/
-	void draw(shader& current_shader, uint& tex);
+	void draw(shader& current_shader, uint& tex) const;
 
 };
 

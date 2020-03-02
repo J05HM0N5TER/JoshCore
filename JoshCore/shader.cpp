@@ -133,37 +133,37 @@ uint shader::link_shader_program()
 	return shader_program_ID;
 }
 
-uint shader::get_shader_program_ID()
+uint shader::get_shader_program_ID() const
 {
 	return shader_program_ID;
 }
 
-void shader::set_uniform_mat3(const char* variable_name, const glm::mat3& value)
+void shader::set_uniform_mat3(const char* variable_name, const glm::mat3& value) const
 {
 	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::MAT3);
 }
 
-void shader::set_uniform_mat4(const char* variable_name, const glm::mat4& value)
+void shader::set_uniform_mat4(const char* variable_name, const glm::mat4& value) const
 {
 	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::MAT4);
 }
 
-void shader::set_uniform_float(const char* variable_name, float value)
+void shader::set_uniform_float(const char* variable_name, float value) const
 {
 	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::FLOAT);
 }
 
-void shader::set_uniform_vec3(const char* variable_name, const glm::vec3& value)
+void shader::set_uniform_vec3(const char* variable_name, const glm::vec3& value) const
 {
 	set_uniform(variable_name, (GLvoid*)&value, shader::UNIFORM_TYPE::VEC3);
 }
 
-void shader::set_uniform_vec4(const char* variable_name, const glm::vec4& value)
+void shader::set_uniform_vec4(const char* variable_name, const glm::vec4& value) const
 {
 	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::VEC4);
 }
 
-void shader::set_uniform(const char* variable_name, const GLvoid* value, UNIFORM_TYPE varible_type)
+void shader::set_uniform(const char* variable_name, const GLvoid* value, UNIFORM_TYPE varible_type) const
 {
 	// GEt the uniform location to use to set the variable
 	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);

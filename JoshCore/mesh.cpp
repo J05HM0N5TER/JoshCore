@@ -70,32 +70,32 @@ mesh::mesh(std::vector<vertex> verticies, std::vector<int> index_order)
 	setup_mesh();
 }
 
-GLsizei mesh::get_verticies_length()
+GLsizei mesh::get_verticies_length() const
 {
 	return GLsizei(m_verticies.size());
 }
 
-GLsizei mesh::get_indices_length()
+GLsizei mesh::get_indices_length() const
 {
 	return GLsizei(m_indices.size());
 }
 
-const void* mesh::get_vertices()
+const void* mesh::get_vertices() const
 {
 	return &m_verticies[0];
 }
 
-const void* mesh::get_indices_array()
+const void* mesh::get_indices_array() const
 {
 	return &m_indices[0];
 }
 
-const std::vector<vertex>& mesh::get_verticies()
+const std::vector<vertex>& mesh::get_verticies() const
 {
 	return m_verticies;
 }
 
-const std::vector<int> mesh::get_indices()
+const std::vector<int> mesh::get_indices() const
 {
 	return m_indices;
 }
@@ -110,7 +110,7 @@ void mesh::set_indices(std::vector<int>& new_index_order)
 	m_indices = new_index_order;
 }
 
-void mesh::draw(shader& current_shader, uint& tex)
+void mesh::draw(shader& current_shader, uint& tex) const
 {
 	if (!setup_complete)
 	{

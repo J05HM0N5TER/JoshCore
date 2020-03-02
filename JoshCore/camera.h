@@ -60,19 +60,19 @@ public:
 	/*	\brief Gets the current position of the camera
 		\return The camera position in world space
 	*/
-	const glm::vec3& get_position();
+	const glm::vec3& get_position() const;
 
 	// \return The transform for where is world space the camera is positioned
-	const glm::mat4& get_world_transform();
+	const glm::mat4& get_world_transform() const;
 
 	// \return The matrix with all the settings for the position of the camera
-	const glm::mat4& get_view();
+	const glm::mat4& get_view() const;
 
 	// \return The settings for how the camera is displaying in a matrix
-	const glm::mat4& get_projection();
+	const glm::mat4& get_projection() const;
 	
 	// \return All the settings for the camera to be used in rendering
-	const glm::mat4& get_projection_view();
+	const glm::mat4& get_projection_view() const;
 
 };
 
