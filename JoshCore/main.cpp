@@ -6,9 +6,17 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #include <crtdbg.h>
+#include "OBJMesh.h"
 using uint = unsigned int;
 
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
+
+struct light
+{
+	glm::vec3 direction;
+	glm::vec3 diffuse; 
+	glm::vec3 specular;
+};
 
 int main() {
 	// Check for memory leaks
@@ -20,55 +28,32 @@ int main() {
 
 	/*** Create and 'load' mesh ***/
 
-	//mesh cube(
-	//	{
-	//	vertex(-0.5f, 0.5f, -0.5f),
-	//	vertex(0.5f, 0.5f, -0.5f),
-	//	vertex(-0.5f, -0.5f, -0.5f),
-	//	vertex(0.5f, -0.5f, -0.5f),
-
-	//	vertex(-0.5f, 0.5f, 0.5f),
-	//	vertex(0.5f, 0.5f, 0.5f),
-	//	vertex(-0.5f, -0.5f, 0.5f),
-	//	vertex(0.5f, -0.5f, 0.5f)
-	//	},
-	//	{
-	//		// Back
-	//		0,1,2,
-	//		3,2,1,
-
-	//		// Front
-	//		6,5,4,
-	//		5,6,7,
-
-	//		// Bottom
-	//		2,3,6,
-	//		7,6,3,
-
-	//		// Right
-	//		7,3,1,
-	//		1,5,7,
-
-	//		// Left 
-	//		4,0,2,
-	//		6,4,2,
-
-	//		// Top
-	//		1,0,4,
-	//		5,1,4
-	//	});
-
-	mesh square(
+	mesh quad(
 		{
-			vertex({ -0.5f, 0.5f, 0 }, { 0, 0 }),
-			vertex({ 0.5f, 0.5f, 0 }, { 1,0 }),
-			vertex({ -0.5f, -0.5f, 0 }, { 0, 1 }),
-			vertex({ 0.5f, -0.5f, 0 },{ 1, 1 })
-		},
+			vertex({ -0.5f, 0,  0.5f }, { 0, 0, 1 }, { 0, 0 }),
+			vertex({  0.5f, 0,  0.5f }, { 0, 0, 1 }, { 1, 0 }),
+			vertex({ -0.5f, 0, -0.5f }, { 0, 0, 1 }, { 0, 1 }),
+			vertex({  0.5f, 0, -0.5f }, { 0, 0, 1 }, { 1, 1 })
+		}, 
 		{
 			1, 2, 0,	// first triangle
 			3, 2, 1		// second triangle
 		});
+
+	aie::OBJMesh dragon;
+	dragon.load("../Models/Dragon.obj");
+
+	/*** Lights ***/
+	light light1;
+	light1.diffuse = { 1, 0, 0 };
+	light1.specular = { 1, 0, 0 };
+	light1.direction = { 0, 0, -1 };
+	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
+	
+	light light2;
+	light2.diffuse = { 0, 1, 0 };
+	light2.specular = { 0, 1, 0 };
+	light2.direction = { 0, 0, 1 };
 
 	uint m_texture;
 	glGenTextures(1, &m_texture);
@@ -96,12 +81,13 @@ int main() {
 
 	/** Camera **/
 	fly_camera main_camera;
+	//main_camera.set_position({ 0, 2, 2 });
 	glm::mat4 model = glm::mat4(1.0f);
 
 
 	shader main_shader;
-	main_shader.create_fragment_shader("../Shaders/simple_frag.glsl");
-	main_shader.create_vertex_shader("../Shaders/simple_vertex.glsl");
+	main_shader.create_fragment_shader("../Shaders/phong.frag");
+	main_shader.create_vertex_shader("../Shaders/phong.vert");
 	main_shader.link_shader_program();
 
 	// Wire-frame mode
@@ -110,8 +96,13 @@ int main() {
 	// Set background colour
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
 	// Used to work out delta-time.
-	ULONGLONG previous = GetTickCount64();
+	double previous = glfwGetTime();
+
 
 	// Disable mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -122,12 +113,13 @@ int main() {
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
 		// Delta-time
-		ULONGLONG now = GetTickCount64();
-		float delta_time = float(now - previous) / 1000.f;
+		double now = glfwGetTime();
+		float delta_time = float(now - previous);
 		previous = now;
 
+		//light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
 		// Rotate the world
-		model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
+		//model = glm::rotate(model, delta_time, glm::vec3(0, 1, 0));
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
@@ -139,16 +131,39 @@ int main() {
 		glUseProgram(main_shader.get_shader_program_ID());
 
 		// Set variables
+		// Lights
+		main_shader.set_uniform_vec3("Ia", ambient_light);
+
+		main_shader.set_uniform_vec3("Id1", light1.diffuse);
+		main_shader.set_uniform_vec3("Is1", light1.specular);
+		main_shader.set_uniform_vec3("LightDirection1", light1.direction);
+
+		main_shader.set_uniform_vec3("Id2", light2.diffuse);
+		main_shader.set_uniform_vec3("Is2", light2.specular);
+		main_shader.set_uniform_vec3("LightDirection2", light2.direction);
+
+
 		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
 		main_shader.set_uniform_mat4("model_matrix", model);
 		main_shader.set_uniform_vec4("colour", color);
+		main_shader.set_uniform_mat3("NormalMatrix", glm::inverseTranspose(glm::mat3(model)));
+
+		main_shader.set_uniform_vec3("Ka", glm::vec3(0));
+		main_shader.set_uniform_vec3("Kd", { 0.27296f, 0.70272f, 0.6212f });
+		main_shader.set_uniform_vec3("Ks", { 0.35f, 0.35f, 0.35f });
+		main_shader.set_uniform_float("specularPower", 34.f);
+
+		main_shader.set_uniform_vec3("cameraPosition",	main_camera.get_world_transform()[3]);
+		
+
 
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//cube.draw(main_shader);
-		square.draw(main_shader, m_texture);
+		quad.draw(main_shader, m_texture);
+		dragon.draw();
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

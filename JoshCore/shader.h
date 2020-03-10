@@ -22,11 +22,28 @@ private:
 	uint shader_program_ID = UINT_MAX;
 
 	// Function to print the error log on the shader program
-	void print_error_log();
+	void print_program_error_log();
+	void print_shader_error_log(uint shader_ID);
 
 	uint create_shader(uint shader_type, const char* shader_path);
 
 public:
+
+	// Used to specify what data type in the set_uniform
+	static enum class UNIFORM_TYPE : char
+	{
+		FLOAT,
+		VEC2,
+		VEC3,
+		VEC4,
+		MAT2,
+		MAT3,
+		MAT4,
+		INT,
+		UINT,
+		BOOL
+	};
+
 	// Constructor
 	shader();
 
@@ -52,19 +69,44 @@ public:
 	/*	Return the ID of the created ID
 		\warning If UINT_MAX then the shader program has not been made yet
 	*/
-	uint get_shader_program_ID();
+	uint get_shader_program_ID() const;
 
 	/*	\brief Sets a matrix 4 on the shader program
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
-	void set_uniform_mat4(const char* variable_name, glm::mat4 value);
+	void set_uniform_mat3(const char* variable_name, const glm::mat3& value) const;
+
+	/*	\brief Sets a matrix 4 on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to
+	*/
+	void set_uniform_mat4(const char* variable_name, const glm::mat4& value) const;
+
+	/*	\brief Sets a float on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to
+	*/
+	void set_uniform_float(const char* variable_name, float value) const;
+	
+	/*	\brief Sets a vector 3 on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to
+	*/
+	void set_uniform_vec3(const char* variable_name, const glm::vec3& value) const;
 
 	/*	\brief Sets a vector 4 on the shader program
 		\param variable_name The name of the variable that you are setting
 		\param value The value that you are setting it to
 	*/
-	void set_uniform_vec4(const char* variable_name, glm::vec4 value);
+	void set_uniform_vec4(const char* variable_name, const glm::vec4& value) const;
+
+	/*	\brief Sets a variable on the shader program
+		\param variable_name The name of the variable that you are setting
+		\param value The value that you are setting it to cast to a GLvoid*
+		\param varible_type The data type that the variable you are setting is
+	*/
+	void set_uniform(const char* variable_name, const GLvoid* value, UNIFORM_TYPE varible_type) const;
 };
 
 #endif // !SHADER_H

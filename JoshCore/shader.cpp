@@ -1,6 +1,6 @@
 #include "shader.h"
 
-void shader::print_error_log()
+void shader::print_program_error_log()
 {
 	// Get the length of the error message
 	GLint log_length = 0;
@@ -9,6 +9,25 @@ void shader::print_error_log()
 	char* log = new char[log_length];
 	// Copy the error message
 	glGetProgramInfoLog(shader_program_ID, log_length, 0, log);
+
+	// Create the error message
+	std::string error_message(log);
+	error_message += "SHADER_PROGRAM_FAILED_TO_COMPILE";
+	printf(error_message.c_str());
+	// Clean up anyway
+	delete[] log;
+	throw std::runtime_error("Shader program compile failed");
+}
+
+void shader::print_shader_error_log(uint shader_ID)
+{
+	// Get the length of the error message
+	GLint log_length = 0;
+	glGetShaderiv(shader_ID, GL_INFO_LOG_LENGTH, &log_length);
+	// Create the error buffer
+	char* log = new char[log_length];
+	// Copy the error message
+	glGetShaderInfoLog(shader_ID, log_length, 0, log);
 
 	// Create the error message
 	std::string error_message(log);
@@ -52,7 +71,7 @@ uint shader::create_shader(uint shader_type, const char* shader_path)
 	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
 	if (success == GL_FALSE)
 	{
-		print_error_log();
+		print_shader_error_log(shader_id);
 	}
 
 	return shader_id;
@@ -99,35 +118,89 @@ uint shader::link_shader_program()
 	// Check compile status
 	GLint log_length = 0;
 	glGetProgramiv(shader_program_ID, GL_INFO_LOG_LENGTH, &log_length);
-	char* log = new char[log_length];
 
 	//check link error
 	GLint Success = 0;
 	glGetProgramiv(shader_program_ID, GL_LINK_STATUS, &Success);
 
 
-	//print_error_log(shader_program_ID);
+	//print_program_error_log(shader_program_ID);
 	if (Success == GL_FALSE)
 	{
-		print_error_log();
+		print_program_error_log();
 	}
 
 	return shader_program_ID;
 }
 
-uint shader::get_shader_program_ID()
+uint shader::get_shader_program_ID() const
 {
 	return shader_program_ID;
 }
 
-void shader::set_uniform_mat4(const char* variable_name, glm::mat4 value)
+void shader::set_uniform_mat3(const char* variable_name, const glm::mat3& value) const
 {
-	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
-	glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(value));
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::MAT3);
 }
 
-void shader::set_uniform_vec4(const char* variable_name, glm::vec4 value)
+void shader::set_uniform_mat4(const char* variable_name, const glm::mat4& value) const
 {
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::MAT4);
+}
+
+void shader::set_uniform_float(const char* variable_name, float value) const
+{
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::FLOAT);
+}
+
+void shader::set_uniform_vec3(const char* variable_name, const glm::vec3& value) const
+{
+	set_uniform(variable_name, (GLvoid*)&value, shader::UNIFORM_TYPE::VEC3);
+}
+
+void shader::set_uniform_vec4(const char* variable_name, const glm::vec4& value) const
+{
+	set_uniform(variable_name, (GLvoid*)&value, UNIFORM_TYPE::VEC4);
+}
+
+void shader::set_uniform(const char* variable_name, const GLvoid* value, UNIFORM_TYPE varible_type) const
+{
+	// GEt the uniform location to use to set the variable
 	auto uniform_location = glGetUniformLocation(shader_program_ID, variable_name);
-	glUniform4fv(uniform_location, 1, glm::value_ptr(value));
+
+	// Set the viable type based on when the paramiter specifies
+	switch (varible_type)
+	{
+	case shader::UNIFORM_TYPE::FLOAT:
+		glUniform1fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::VEC2:
+		glUniform2fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::VEC3:
+		glUniform3fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::VEC4:
+		glUniform4fv(uniform_location, 1, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::MAT2:
+		glUniformMatrix2fv(uniform_location, 1, false, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::MAT3:
+		glUniformMatrix3fv(uniform_location, 1, false, (GLfloat*)value);
+		break;
+	case shader::UNIFORM_TYPE::MAT4:
+		glUniformMatrix4fv(uniform_location, 1, false, (GLfloat*)value);
+		break;
+	// Bool is transferred like an int and when it is 0 it is false
+	case shader::UNIFORM_TYPE::BOOL:
+	case shader::UNIFORM_TYPE::INT:
+		glUniform1i(uniform_location, GLint(value));
+		break;
+	case shader::UNIFORM_TYPE::UINT:
+		glUniform1ui(uniform_location, GLuint(value));
+		break;
+	default:
+		break;
+	}
 }

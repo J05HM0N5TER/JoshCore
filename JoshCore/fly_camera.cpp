@@ -2,7 +2,7 @@
 
 void fly_camera::update(float delta_time)
 {
-
+	bool has_input = false;
 	GLFWwindow* window = glfwGetCurrentContext();
 	// Vector to store all the keyboard input to
 	glm::vec4 input(0, 0, 0, 0);
@@ -24,10 +24,17 @@ void fly_camera::update(float delta_time)
 	// Modify the position based off of the input and the new_speed
 	//this->set_position(this->get_world_transform()[3] - (input * speed * delta_time));
 
-	glm::vec4 move_direction = -input.z * world_transform[2] + input.x * world_transform[0] + input.y * world_transform[1];
-	glm::normalize(move_direction);
+	if (input != glm::vec4(0.0f))
+	{
 
-	this->world_transform[3] += (move_direction * speed * delta_time);
+		glm::vec4 move_direction = -input.z * world_transform[2] + input.x * world_transform[0] + input.y * world_transform[1];
+		glm::normalize(move_direction);
+
+		this->world_transform[3] += (move_direction * speed * delta_time);
+
+		has_input = true;
+
+	}
 	/* MOUSE LOOK */
 	double cursor_position_x;
 	double cursor_position_y;
@@ -53,12 +60,13 @@ void fly_camera::update(float delta_time)
 		// Apply the rotation to the camera
 		world_transform = world_transform * rotation;
 		// Update PxV
+		has_input = true;
 	}
 
-
-	update_projection_view_transform();
+	if (has_input)
+		update_projection_view_transform();
 }
-
+ 
 void fly_camera::set_speed(float new_speed)
 {
 	this->speed = new_speed;
