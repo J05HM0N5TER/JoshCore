@@ -60,7 +60,6 @@ public:
 		\param current_shader The shader that is being used for this mesh for rendering
 	*/
 	void draw(shader& current_shader, uint& tex) const;
-
 };
 
 #endif // !MESH_H

@@ -43,16 +43,18 @@ int main() {
 	aie::OBJMesh dragon;
 	dragon.load("../Models/Dragon.obj");
 
+	//std::cout << "Mesh chucks: " << dragon.getChunks().size() << std::endl;
+
 	/*** Lights ***/
 	light light1;
-	light1.diffuse = { 1, 0, 0 };
-	light1.specular = { 1, 0, 0 };
+	light1.diffuse = { 0, 0, 1 };
+	light1.specular = light1.diffuse;
 	light1.direction = { 0, 0, -1 };
 	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
 	
 	light light2;
-	light2.diffuse = { 0, 1, 0 };
-	light2.specular = { 0, 1, 0 };
+	light2.diffuse = { 1, 0, 0 };
+	light2.specular = light2.diffuse;
 	light2.direction = { 0, 0, 1 };
 
 	uint m_texture;
