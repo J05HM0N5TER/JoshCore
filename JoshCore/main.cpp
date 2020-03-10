@@ -1,13 +1,11 @@
-#include "shader.h"
-#include "fly_camera.h"
+#include <crtdbg.h>
 #include <iostream>
 #include <time.h>
+#include "shader.h"
+#include "fly_camera.h"
 #include "mesh.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
-#include <crtdbg.h>
 #include "OBJMesh.h"
-using uint = unsigned int;
+#include "texture.h"
 
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
 
@@ -42,6 +40,8 @@ int main() {
 
 	aie::OBJMesh dragon;
 	dragon.load("../Models/Dragon.obj");
+	aie::OBJMesh sword_and_shield;
+	sword_and_shield.load("../Models/meshSwordShield.obj");
 
 	//std::cout << "Mesh chucks: " << dragon.getChunks().size() << std::endl;
 
@@ -57,28 +57,29 @@ int main() {
 	light2.specular = light2.diffuse;
 	light2.direction = { 0, 0, 1 };
 
-	uint m_texture;
-	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
+	texture test_texture("../images/test.jpg");
+	//uint m_texture;
+	//glGenTextures(1, &m_texture);
+	//glBindTexture(GL_TEXTURE_2D, m_texture);
 
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("../images/test.jpg", &width, &height, &nrChannels, 0);
-	std::cout << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
+	//int width, height, nrChannels;
+	//unsigned char* data = stbi_load("../images/test.jpg", &width, &height, &nrChannels, 0);
+	//std::cout << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
 
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
-	}
-	else
-	{
-		printf("Failed to load texture\n");
-	}
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR SAMPLES texels
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // GL_NEARESTS RETURNS just closest pixel
+	//if (data)
+	//{
+	//	glTexImage2D(GL_TEXTURE_2D, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
+	//}
+	//else
+	//{
+	//	printf("Failed to load texture\n");
+	//}
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR SAMPLES texels
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // GL_NEARESTS RETURNS just closest pixel
 
-	//glDeleteTextures(1, &m_texture));
+	////glDeleteTextures(1, &m_texture));
 
-	stbi_image_free(data);
+	//stbi_image_free(data);
 
 
 	/** Camera **/
@@ -119,7 +120,8 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		//light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
+		light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
+		light2.direction = -glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
 		// Rotate the world
 		//model = glm::rotate(model, delta_time, glm::vec3(0, 1, 0));
 
@@ -164,8 +166,9 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//cube.draw(main_shader);
-		quad.draw(main_shader, m_texture);
-		dragon.draw();
+		quad.draw(main_shader, test_texture.texture_id);
+		//dragon.draw();
+		sword_and_shield.draw();
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);
