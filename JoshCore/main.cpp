@@ -44,10 +44,16 @@ int main() {
 	dragon.load("../Models/Dragon.obj");
 
 	/*** Lights ***/
-	light main_light;
-	main_light.diffuse = { 1, 1, 0 };
-	main_light.specular = { 1, 1, 1 };
+	light light1;
+	light1.diffuse = { 1, 0, 0 };
+	light1.specular = { 1, 0, 0 };
+	light1.direction = { 0, 0, -1 };
 	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
+	
+	light light2;
+	light2.diffuse = { 0, 1, 0 };
+	light2.specular = { 0, 1, 0 };
+	light2.direction = { 0, 0, 1 };
 
 	uint m_texture;
 	glGenTextures(1, &m_texture);
@@ -111,9 +117,9 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		//main_light.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
+		//light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
 		// Rotate the world
-		//model = glm::rotate(model, 0.016f, glm::vec3(0, 1, 0));
+		//model = glm::rotate(model, delta_time, glm::vec3(0, 1, 0));
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
@@ -125,10 +131,18 @@ int main() {
 		glUseProgram(main_shader.get_shader_program_ID());
 
 		// Set variables
+		// Lights
 		main_shader.set_uniform_vec3("Ia", ambient_light);
-		main_shader.set_uniform_vec3("Id", main_light.diffuse);
-		main_shader.set_uniform_vec3("Is", main_light.specular);
-		main_shader.set_uniform_vec3("LightDirection", main_light.direction);
+
+		main_shader.set_uniform_vec3("Id1", light1.diffuse);
+		main_shader.set_uniform_vec3("Is1", light1.specular);
+		main_shader.set_uniform_vec3("LightDirection1", light1.direction);
+
+		main_shader.set_uniform_vec3("Id2", light2.diffuse);
+		main_shader.set_uniform_vec3("Is2", light2.specular);
+		main_shader.set_uniform_vec3("LightDirection2", light2.direction);
+
+
 		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
 		main_shader.set_uniform_mat4("model_matrix", model);
 		main_shader.set_uniform_vec4("colour", color);
