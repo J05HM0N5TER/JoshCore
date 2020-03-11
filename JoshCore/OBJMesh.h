@@ -9,6 +9,15 @@
 
 namespace aie {
 
+	struct MeshChunk {
+		unsigned int	vao, vbo, ibo;
+		unsigned int	indexCount;
+		int				materialID;
+
+		void Bind();
+		void Unbind();
+	};
+
 // a simple triangle mesh wrapper
 class OBJMesh {
 public:
@@ -26,6 +35,7 @@ public:
 	// a basic material
 	class Material {
 	public:
+
 
 		Material() : ambient(1), diffuse(1), specular(0), emissive(0), specularPower(1), opacity(1) {}
 		~Material() {}
@@ -54,7 +64,10 @@ public:
 	bool load(const char* filename, bool loadTextures = true, bool flipTextureV = false);
 
 	// allow option to draw as patches for tessellation
+	// Draws all MeshChuncks
 	void draw(bool usePatches = false);
+	// Draws a single meshChunck
+	static void draw(MeshChunk mesh, bool usePatches = false);
 
 	// access to the filename that was loaded
 	const std::string& getFilename() const { return m_filename; }
@@ -63,15 +76,11 @@ public:
 	size_t getMaterialCount() const { return m_materials.size();  }
 	Material& getMaterial(size_t index) { return m_materials[index];  }
 
+	const std::vector<MeshChunk>& getChunks() const { return m_meshChunks; };
+
 private:
 
 	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
-
-	struct MeshChunk {
-		unsigned int	vao, vbo, ibo;
-		unsigned int	indexCount;
-		int				materialID;
-	};
 
 	std::string				m_filename;
 	std::vector<MeshChunk>	m_meshChunks;

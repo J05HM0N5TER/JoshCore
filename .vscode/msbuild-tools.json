@@ -1,0 +1,17 @@
+{
+    "solution": "${workspaceRoot}/JoshCore.sln",
+    "variables": {
+        "MSBUILD": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/MSBuild/Current/Bin/MSBuild.exe",
+        "DEVENV": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/IDE/devenv.exe"
+    },
+    "preBuildTasks": [],
+    "postBuildTasks": [],
+    "debugConfigurations": [
+        {
+            "name": "JoshCore",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceRoot}/x64/${buildConfig}/JoshCore.exe",
+            "args": []
+        }
+    ]
+}
