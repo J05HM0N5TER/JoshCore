@@ -7,6 +7,7 @@
 #include "OBJMesh.h"
 #include "texture.h"
 
+void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal);
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
 
 struct light
@@ -38,48 +39,30 @@ int main() {
 			3, 2, 1		// second triangle
 		});
 
-	aie::OBJMesh dragon;
-	dragon.load("../Models/Dragon.obj");
 	aie::OBJMesh sword_and_shield;
 	sword_and_shield.load("../Models/meshSwordShield.obj");
+	aie::MeshChunk shield = sword_and_shield.getChunks()[0];
+	aie::MeshChunk sword = sword_and_shield.getChunks()[1];
 
 	//std::cout << "Mesh chucks: " << dragon.getChunks().size() << std::endl;
 
 	/*** Lights ***/
 	light light1;
-	light1.diffuse = { 0, 0, 1 };
+	light1.diffuse = { 1, 1, 1 };
 	light1.specular = light1.diffuse;
 	light1.direction = { 0, 0, -1 };
 	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
 	
 	light light2;
-	light2.diffuse = { 1, 0, 0 };
+	light2.diffuse = { 1, 1, 1 };
 	light2.specular = light2.diffuse;
 	light2.direction = { 0, 0, 1 };
 
-	texture test_texture("../images/test.jpg");
-	//uint m_texture;
-	//glGenTextures(1, &m_texture);
-	//glBindTexture(GL_TEXTURE_2D, m_texture);
-
-	//int width, height, nrChannels;
-	//unsigned char* data = stbi_load("../images/test.jpg", &width, &height, &nrChannels, 0);
-	//std::cout << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
-
-	//if (data)
-	//{
-	//	glTexImage2D(GL_TEXTURE_2D, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
-	//}
-	//else
-	//{
-	//	printf("Failed to load texture\n");
-	//}
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR SAMPLES texels
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // GL_NEARESTS RETURNS just closest pixel
-
-	////glDeleteTextures(1, &m_texture));
-
-	//stbi_image_free(data);
+	//texture test_texture("../Textures/test.jpg");
+	texture shield_diffuse("../Textures/UVAlbedoMap_Shield.png");
+	texture shield_normal("../Textures/UVNormalMap_Shield.png");
+	texture sword_diffuse("../Textures/UVAlbedoMap_Sword.png");
+	texture sword_normal("../Textures/UVNormalMap_Sword.png");
 
 
 	/** Camera **/
@@ -150,7 +133,7 @@ int main() {
 		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
 		main_shader.set_uniform_mat4("model_matrix", model);
 		main_shader.set_uniform_vec4("colour", color);
-		main_shader.set_uniform_mat3("NormalMatrix", glm::inverseTranspose(glm::mat3(model)));
+		main_shader.set_uniform_mat3("normal_matrix", glm::inverseTranspose(glm::mat3(model)));
 
 		main_shader.set_uniform_vec3("Ka", glm::vec3(0));
 		main_shader.set_uniform_vec3("Kd", { 0.27296f, 0.70272f, 0.6212f });
@@ -165,10 +148,10 @@ int main() {
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//cube.draw(main_shader);
-		quad.draw(main_shader, test_texture.texture_id);
-		//dragon.draw();
-		sword_and_shield.draw();
+		//quad.draw(main_shader, test_texture.texture_id);
+
+		draw(sword, &main_shader, &sword_diffuse, &sword_normal);
+		draw(shield, &main_shader, &shield_diffuse, &shield_normal);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);
@@ -216,4 +199,48 @@ int glm_init(const char* window_name, size_t window_width, size_t window_height)
 	printf("GL: %i.%i\n", major, minor);
 
 	return 0;
+}
+
+void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal)
+{
+	// Get uniform ids
+	int program = -1;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+	int diffuseTexUniform = glGetUniformLocation(program, "diffuse_texture");
+	int normalTexUniform = glGetUniformLocation(program, "normal_texture");
+	
+	// Set textures to an ID
+	if (diffuseTexUniform >= 0)
+		glUniform1i(diffuseTexUniform, 0);
+	if (normalTexUniform >= 0)
+		glUniform1i(normalTexUniform, 1);
+
+	// Bind textures to correct ID
+	glActiveTexture(GL_TEXTURE0);
+	if (diffuse->texture_id)
+		glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
+	else if (diffuseTexUniform >= 0)
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	glActiveTexture(GL_TEXTURE1);
+	if (normal->texture_id)
+		glBindTexture(GL_TEXTURE_2D, normal->texture_id);
+	else if (normalTexUniform >= 0)
+		glBindTexture(GL_TEXTURE_2D, 0);
+	
+	/* Simplified view of texture binding
+	// Specifying what texture I am setting
+	glActiveTexture(GL_TEXTURE0);
+	// Set texture
+	glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normal->texture_id);
+	*/
+
+	// Draw on screen
+	current_mesh.Bind();
+	glDrawElements(GL_TRIANGLES, current_mesh.indexCount, GL_UNSIGNED_INT, 0);
+	current_mesh.Unbind();
 }

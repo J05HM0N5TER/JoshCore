@@ -5,6 +5,8 @@
 
 texture::texture(const char* texture_path)
 {
+	stbi_set_flip_vertically_on_load(true);
+
 	//int x, y, n;
 	//stbi_set_flip_vertically_on_load(true);
 	//unsigned char* data = stbi_load(texture_path, &x, &y, &n, 0);
@@ -38,7 +40,7 @@ texture::texture(const char* texture_path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("../Textures/test.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load(texture_path, &width, &height, &nrChannels, 0);
 	//std::cout << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
 
 	if (data)

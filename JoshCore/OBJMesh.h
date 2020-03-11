@@ -9,6 +9,15 @@
 
 namespace aie {
 
+	struct MeshChunk {
+		unsigned int	vao, vbo, ibo;
+		unsigned int	indexCount;
+		int				materialID;
+
+		void Bind();
+		void Unbind();
+	};
+
 // a simple triangle mesh wrapper
 class OBJMesh {
 public:
@@ -48,12 +57,6 @@ public:
 		//Texture displacementTexture;		// bound slot 6
 	};
 
-	struct MeshChunk {
-		unsigned int	vao, vbo, ibo;
-		unsigned int	indexCount;
-		int				materialID;
-	};
-
 	OBJMesh() {}
 	~OBJMesh();
 
@@ -64,7 +67,7 @@ public:
 	// Draws all MeshChuncks
 	void draw(bool usePatches = false);
 	// Draws a single meshChunck
-	void draw(MeshChunk mesh, bool usePatches = false);
+	static void draw(MeshChunk mesh, bool usePatches = false);
 
 	// access to the filename that was loaded
 	const std::string& getFilename() const { return m_filename; }
