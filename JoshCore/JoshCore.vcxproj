@@ -164,6 +164,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="OBJMesh.cpp" />
+    <ClCompile Include="primitives.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="fly_camera.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="OBJMesh.h" />
+    <ClInclude Include="primitives.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
