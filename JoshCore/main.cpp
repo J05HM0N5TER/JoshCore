@@ -6,6 +6,8 @@
 #include "mesh.h"
 #include "OBJMesh.h"
 #include "texture.h"
+#include "mesh2D.h"
+#include "primitives2D.h"
 
 void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal);
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
@@ -13,7 +15,7 @@ int glm_init(const char* window_name, size_t window_width, size_t window_height)
 struct light
 {
 	glm::vec3 direction;
-	glm::vec3 diffuse; 
+	glm::vec3 diffuse;
 	glm::vec3 specular;
 };
 
@@ -26,25 +28,8 @@ int main() {
 	GLFWwindow* window = glfwGetCurrentContext();
 
 	/*** Create and 'load' mesh ***/
+	mesh2D square = primitives2D::square({1.f,1.f,1.f,1.f});
 
-	mesh quad(
-		{
-			vertex({ -0.5f, 0,  0.5f }, { 0, 0, 1 }, { 0, 0 }),
-			vertex({  0.5f, 0,  0.5f }, { 0, 0, 1 }, { 1, 0 }),
-			vertex({ -0.5f, 0, -0.5f }, { 0, 0, 1 }, { 0, 1 }),
-			vertex({  0.5f, 0, -0.5f }, { 0, 0, 1 }, { 1, 1 })
-		}, 
-		{
-			1, 2, 0,	// first triangle
-			3, 2, 1		// second triangle
-		});
-
-	aie::OBJMesh sword_and_shield;
-	sword_and_shield.load("../Models/meshSwordShield.obj");
-	aie::MeshChunk shield = sword_and_shield.getChunks()[0];
-	aie::MeshChunk sword = sword_and_shield.getChunks()[1];
-
-	//std::cout << "Mesh chucks: " << dragon.getChunks().size() << std::endl;
 
 	/*** Lights ***/
 	light light1;
@@ -52,29 +37,24 @@ int main() {
 	light1.specular = light1.diffuse;
 	light1.direction = { 0, 0, -1 };
 	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
-	
+
 	light light2;
 	light2.diffuse = { 1, 1, 1 };
 	light2.specular = light2.diffuse;
 	light2.direction = { 0, 0, 1 };
 
-	//texture test_texture("../Textures/test.jpg");
-	texture shield_diffuse("../Textures/UVAlbedoMap_Shield.png");
-	texture shield_normal("../Textures/UVNormalMap_Shield.png");
-	texture sword_diffuse("../Textures/UVAlbedoMap_Sword.png");
-	texture sword_normal("../Textures/UVNormalMap_Sword.png");
-
 
 	/** Camera **/
 	fly_camera main_camera;
+	main_camera.set_ortho(-1, 1, -1, 1);
 	//main_camera.set_position({ 0, 2, 2 });
 	glm::mat4 model = glm::mat4(1.0f);
 
+	shader shader2d;
+	shader2d.create_fragment_shader("../Shaders/2d.frag");
+	shader2d.create_vertex_shader("../Shaders/2d.vert");
 
-	shader main_shader;
-	main_shader.create_fragment_shader("../Shaders/phong.frag");
-	main_shader.create_vertex_shader("../Shaders/phong.vert");
-	main_shader.link_shader_program();
+	// Accurate 
 
 	// Wire-frame mode
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -103,8 +83,8 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
-		light2.direction = -glm::normalize(glm::vec3(glm::cos(now * 2 ), glm::sin(now * 2), 0));
+		light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2), glm::sin(now * 2), 0));
+		light2.direction = -glm::normalize(glm::vec3(glm::cos(now * 2), glm::sin(now * 2), 0));
 		// Rotate the world
 		//model = glm::rotate(model, delta_time, glm::vec3(0, 1, 0));
 
@@ -115,43 +95,16 @@ int main() {
 		main_camera.update(delta_time);
 
 		// Turn shader on
-		glUseProgram(main_shader.get_shader_program_ID());
+		glUseProgram(shader2d.get_shader_program_ID());
 
-		// Set variables
-		// Lights
-		main_shader.set_uniform_vec3("Ia", ambient_light);
-
-		main_shader.set_uniform_vec3("Id1", light1.diffuse);
-		main_shader.set_uniform_vec3("Is1", light1.specular);
-		main_shader.set_uniform_vec3("LightDirection1", light1.direction);
-
-		main_shader.set_uniform_vec3("Id2", light2.diffuse);
-		main_shader.set_uniform_vec3("Is2", light2.specular);
-		main_shader.set_uniform_vec3("LightDirection2", light2.direction);
-
-
-		main_shader.set_uniform_mat4("projection_view_matrix", main_camera.get_projection_view());
-		main_shader.set_uniform_mat4("model_matrix", model);
-		main_shader.set_uniform_vec4("colour", color);
-		main_shader.set_uniform_mat3("normal_matrix", glm::inverseTranspose(glm::mat3(model)));
-
-		main_shader.set_uniform_vec3("Ka", glm::vec3(0));
-		main_shader.set_uniform_vec3("Kd", { 0.27296f, 0.70272f, 0.6212f });
-		main_shader.set_uniform_vec3("Ks", { 0.35f, 0.35f, 0.35f });
-		main_shader.set_uniform_float("specularPower", 34.f);
-
-		main_shader.set_uniform_vec3("cameraPosition",	main_camera.get_world_transform()[3]);
 		
+		square.draw(shader2d);
 
 
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//quad.draw(main_shader, test_texture.texture_id);
-
-		draw(sword, &main_shader, &sword_diffuse, &sword_normal);
-		draw(shield, &main_shader, &shield_diffuse, &shield_normal);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);
@@ -208,7 +161,7 @@ void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse
 	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 	int diffuseTexUniform = glGetUniformLocation(program, "diffuse_texture");
 	int normalTexUniform = glGetUniformLocation(program, "normal_texture");
-	
+
 	// Set textures to an ID
 	if (diffuseTexUniform >= 0)
 		glUniform1i(diffuseTexUniform, 0);
@@ -228,7 +181,7 @@ void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse
 		glBindTexture(GL_TEXTURE_2D, normal->texture_id);
 	else if (normalTexUniform >= 0)
 		glBindTexture(GL_TEXTURE_2D, 0);
-	
+
 	/* Simplified view of texture binding
 	// Specifying what texture I am setting
 	glActiveTexture(GL_TEXTURE0);

@@ -44,6 +44,14 @@ public:
 		\param far How far from the camera is the far clipping mask
 	*/
 	void set_perspective(float field_of_view, float aspect_ratio, float near, float far);
+	
+	/*	\brief Sets the settings for view of the camera
+		\param field_of_view The field of view for the camera (in radians)
+		\param aspect_ratio the dimensions of the cameras view (width / height)
+		\param near How far from the camera is the new clipping mask
+		\param far How far from the camera is the far clipping mask
+	*/
+	void set_ortho(float up, float right, float bottom, float top);
 
 	/*	\brief Sets position settings for camera
 		\param from The world position that the camera is rendering from

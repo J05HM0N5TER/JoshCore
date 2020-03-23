@@ -27,6 +27,11 @@ void camera::set_perspective(float field_of_view, float aspect_ratio, float near
 	this->update_projection_view_transform();
 }
 
+void camera::set_ortho(float left, float right, float bottom, float top)
+{
+	projection_transform = glm::ortho(left, right, bottom, top);
+}
+
 void camera::set_look_at(const glm::vec3& from, const glm::vec3& to, const glm::vec3& up)
 {
 	view_transform = glm::lookAt(from, to, up);
