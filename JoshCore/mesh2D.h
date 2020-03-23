@@ -7,10 +7,8 @@
 #include "gl_core_4_5.h"
 #include "shader.h"
 
-class vertex2D
+struct vertex2D
 {
-public:
-
 	vertex2D(glm::vec3 position, glm::vec4 colour)
 		: position{ position, 0 }, colour{ colour }
 	{	}

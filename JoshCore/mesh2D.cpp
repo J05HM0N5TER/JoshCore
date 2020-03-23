@@ -70,6 +70,11 @@ const void* mesh2D::get_vertices() const
 	return (void*)&m_verticies[0];
 }
 
+const std::vector<vertex2D>& mesh2D::get_verticies() const
+{
+	return m_verticies;
+}
+
 void mesh2D::set_verticies(std::vector<vertex2D>& new_vertices)
 {
 	m_verticies = new_vertices;
