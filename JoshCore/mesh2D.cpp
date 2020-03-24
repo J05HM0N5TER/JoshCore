@@ -41,6 +41,10 @@ void mesh2D::setup_mesh()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex2D) * m_verticies.size(), get_vertices(), GL_STATIC_DRAW);
 
+	// Send index order data
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_indices_length() * sizeof(int), get_indices_array(), GL_STATIC_DRAW);
+
 
 	// Set vertex settings
 	// Position

@@ -28,16 +28,45 @@ int main() {
 	GLFWwindow* window = glfwGetCurrentContext();
 
 	/*** Create and 'load' mesh ***/
-	//mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
-	//square.setup_mesh();
-	mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }, 1, 1);
+
+	//mesh quad(
+	//	{
+	//		vertex({ -0.5f, 0,  0.5f }, { 0, 0, 1 }, { 0, 0 }),
+	//		vertex({  0.5f, 0,  0.5f }, { 0, 0, 1 }, { 1, 0 }),
+	//		vertex({ -0.5f, 0, -0.5f }, { 0, 0, 1 }, { 0, 1 }),
+	//		vertex({  0.5f, 0, -0.5f }, { 0, 0, 1 }, { 1, 1 })
+	//	},
+	//	{
+	//		1, 2, 0,	// first triangle
+	//		3, 2, 1		// second triangle
+	//	});
+	mesh2D quad(
+		{
+			vertex2D({ -0.5f, 0,  0.5f }, {0.5,0.5f,0.5f,1}),
+			vertex2D({  0.5f, 0,  0.5f }, {0.5,0.5f,0.5f,1}),
+			vertex2D({ -0.5f, 0, -0.5f }, {0.5,0.5f,0.5f,1}),
+			vertex2D({  0.5f, 0, -0.5f }, {0.5,0.5f,0.5f,1})
+		},
+		{
+			1, 2, 0,	// first triangle
+			3, 2, 1		// second triangle
+		});
+	quad.setup_mesh();
+
+	mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
+	square.setup_mesh();
+	mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, 200/*Width*/, 200);
 	triangle.setup_mesh();
+
+
 	/** Camera **/
-	camera main_camera;
-	main_camera.set_ortho(-16, 16, -9, 9);
+	/*camera main_camera;
+	main_camera.set_ortho(-16, 16, -9, 9);*/
+	fly_camera camera2;
+
 	//main_camera.set_position({ 0, 2, 2 });
 	glm::mat4 model = glm::mat4(1.0f);
-	main_camera.set_position({ 0,0,-1 });
+	//main_camera.set_position({ 0,0,-1 });
 
 	shader shader2d;
 	shader2d.create_fragment_shader("../Shaders/2d.frag");
@@ -71,16 +100,20 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		shader2d.set_uniform_mat4("ProjectionView", main_camera.get_projection_view());
+		camera2.update(delta_time);
+
+		shader2d.bind_shader();
+		shader2d.set_uniform_mat4("ProjectionView", camera2.get_projection_view());
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
 
 		// Turn shader on
-		glUseProgram(shader2d.get_shader_program_ID());
+		//glUseProgram(shader2d.get_shader_program_ID());
 
-		//square.draw(shader2d);
-		//triangle.draw(shader2d);
+		square.draw(shader2d);
+		triangle.draw(shader2d);
+		quad.draw(shader2d);
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
