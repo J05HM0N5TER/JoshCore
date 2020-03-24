@@ -55,14 +55,16 @@ int main() {
 
 	/*mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
 	square.setup_mesh();*/
-	mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, 0.2/*Width*/, 0.2);
-	triangle.setup_mesh();
+	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, 0.1/*Width*/, 0.1);
+	mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, { -0.001,-0.001,0 }, { 0,0.001f,0 }, { 0.001,0,0 });
 
+	triangle.setup_mesh();
+	//Armageddon 
 
 	/** Camera **/
 	camera main_camera;
 	main_camera.set_ortho(-16, 16, -9, 9);
-
+	main_camera.set_look_at({ 0,0,-1 }, { 0,0,1 }, { 0,1,0 });
 	//main_camera.set_position({ 0, 2, 2 });
 	glm::mat4 model = glm::mat4(1.0f);
 	main_camera.set_position({ 0,0,-1 });
@@ -113,7 +115,7 @@ int main() {
 
 		//square.draw(shader2d);
 		triangle.draw(shader2d);
-		quad.draw(shader2d);
+		//quad.draw(shader2d);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

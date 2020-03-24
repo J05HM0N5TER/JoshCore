@@ -19,7 +19,7 @@ const float circle::get_radus() const
 
 bool circle::check_collision(physics_object* a_object)
 {
-	return collision_manager::circle_to_circle(*this, (circle&)a_object);
+	return collision_manager::circle_to_circle(*this, (circle&)*a_object);
 }
 
 circle & circle::operator=(const circle & a_rhs)

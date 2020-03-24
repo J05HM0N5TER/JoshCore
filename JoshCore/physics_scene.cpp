@@ -1,5 +1,8 @@
 #include "physics_scene.h"
 #include <algorithm>
+#include <list>
+#include <cstdio>
+#include "rigid_body.h"
 
 physics_scene::physics_scene()
 {
@@ -39,5 +42,34 @@ void physics_scene::update(float dt)
 		}
 		accumulatedTime -= m_timeStep;
 	}
+
+	static std::list<physics_object*> dirty;
+
+	// Check for collisions
+	for (auto object : m_objects)
+	{
+		for (auto other_object : m_objects)
+		{
+			if (object == other_object)
+				continue;
+
+			if (std::find(dirty.begin(), dirty.end(), object) != dirty.end() &&
+				std::find(dirty.begin(), dirty.end(), other_object) != dirty.end())
+				continue;
+
+			rigid_body* rb = dynamic_cast<rigid_body*>(other_object);
+			if (rb->check_collision(object))
+			{
+				rb->apply_force_to_object(dynamic_cast<rigid_body*>(object),
+					rb->get_velocity() * rb->get_mass());
+
+				dirty.push_back(rb);
+				dirty.push_back(other_object);
+			}
+
+		}
+	}
+
+	dirty.clear();
 }
 

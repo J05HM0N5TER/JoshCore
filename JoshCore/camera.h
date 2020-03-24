@@ -51,7 +51,7 @@ public:
 		\param near How far from the camera is the new clipping mask
 		\param far How far from the camera is the far clipping mask
 	*/
-	void set_ortho(float up, float right, float bottom, float top);
+	void set_ortho(float left, float right, float bottom, float top);
 
 	/*	\brief Sets position settings for camera
 		\param from The world position that the camera is rendering from
