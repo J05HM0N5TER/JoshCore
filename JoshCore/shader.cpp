@@ -133,11 +133,6 @@ uint shader::link_shader_program()
 	return shader_program_ID;
 }
 
-void shader::bind_shader()
-{
-	glUseProgram(shader_program_ID);
-}
-
 uint shader::get_shader_program_ID() const
 {
 	return shader_program_ID;

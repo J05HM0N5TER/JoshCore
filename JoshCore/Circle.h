@@ -3,6 +3,7 @@
 #define CIRCLE_H
 
 #include "rigid_body.h"
+
 class circle : public rigid_body
 {
 public:
@@ -15,13 +16,9 @@ public:
 	void set_radus(float a_radus);
 	const float get_radus() const;
 
-
-	const glm::vec2 get_position() const;
-	void set_position(const glm::vec2 & a_position);
+	virtual bool check_collision(physics_object* a_object);
 
 	circle & operator = (const circle & a_rhs);
-	bool operator == (const circle & a_rhs);
-	bool operator != (const circle & a_rhs);
 
 private:
 	float m_radus = 0.0f;

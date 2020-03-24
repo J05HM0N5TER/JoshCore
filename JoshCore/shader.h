@@ -66,8 +66,6 @@ public:
 	*/
 	uint link_shader_program();
 
-	void bind_shader();
-
 	/*	Return the ID of the created ID
 		\warning If UINT_MAX then the shader program has not been made yet
 	*/

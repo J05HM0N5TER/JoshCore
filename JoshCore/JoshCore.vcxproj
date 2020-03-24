@@ -162,6 +162,7 @@
     <ClCompile Include="aabb.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Collision_manager.cpp" />
     <ClCompile Include="fly_camera.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="aabb.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="Collision_manager.h" />
     <ClInclude Include="fly_camera.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="mesh.h" />

@@ -1,4 +1,5 @@
 #include "circle.h"
+#include "Collision_manager.h"
 #include <cmath>
 
 circle::circle(const glm::vec2 & a_position /*= glm::vec2()*/, float a_radus /*= DEFAULT_RADUS*/) :
@@ -16,14 +17,9 @@ const float circle::get_radus() const
 	return m_radus;
 }
 
-const glm::vec2 circle::get_position() const
+bool circle::check_collision(physics_object* a_object)
 {
-	return m_position;
-}
-
-void circle::set_position(const glm::vec2 & a_position)
-{
-	m_position = a_position;
+	return collision_manager::circle_to_circle(*this, (circle&)a_object);
 }
 
 circle & circle::operator=(const circle & a_rhs)
@@ -33,17 +29,4 @@ circle & circle::operator=(const circle & a_rhs)
 
 	return *this;
 }
-
-bool circle::operator==(const circle & a_rhs)
-{
-	return (this->get_radus() == a_rhs.get_radus() &&
-		this->get_position() == a_rhs.get_position());
-}
-
-bool circle::operator!=(const circle & a_rhs)
-{
-	return !(*this == a_rhs);
-}
-
-
 

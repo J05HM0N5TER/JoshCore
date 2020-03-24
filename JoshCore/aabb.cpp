@@ -11,16 +11,6 @@ aabb::aabb(
 {
 }
 
-const glm::vec2 aabb::get_position() const
-{
-	return this->m_position;
-}
-
-void aabb::set_position(const glm::vec2 & a_position)
-{
-	m_position = a_position;
-}
-
 const glm::vec2 aabb::get_extents() const
 {
 	return m_extents;
@@ -58,15 +48,3 @@ aabb & aabb::operator=(const aabb & a_rhs)
 
 	return *this;
 }
-
-bool aabb::operator==(const aabb & a_rhs)
-{
-	return 	(this->get_extents() == a_rhs.get_extents() &&
-		this->get_position() == a_rhs.get_position());
-}
-
-bool aabb::operator!=(const aabb & a_rhs)
-{
-	return !(*this == a_rhs);
-}
-
