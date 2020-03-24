@@ -28,33 +28,21 @@ int main() {
 	GLFWwindow* window = glfwGetCurrentContext();
 
 	/*** Create and 'load' mesh ***/
-	mesh2D square = primitives2D::square({1.f,1.f,1.f,1.f});
-
-
-	/*** Lights ***/
-	light light1;
-	light1.diffuse = { 1, 1, 1 };
-	light1.specular = light1.diffuse;
-	light1.direction = { 0, 0, -1 };
-	glm::vec3 ambient_light = { 0.25, 0.25, 0.25 };
-
-	light light2;
-	light2.diffuse = { 1, 1, 1 };
-	light2.specular = light2.diffuse;
-	light2.direction = { 0, 0, 1 };
-
-
+	//mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
+	//square.setup_mesh();
+	mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }, 1, 1);
+	triangle.setup_mesh();
 	/** Camera **/
-	fly_camera main_camera;
-	main_camera.set_ortho(-1, 1, -1, 1);
+	camera main_camera;
+	main_camera.set_ortho(-16, 16, -9, 9);
 	//main_camera.set_position({ 0, 2, 2 });
 	glm::mat4 model = glm::mat4(1.0f);
+	main_camera.set_position({ 0,0,-1 });
 
 	shader shader2d;
 	shader2d.create_fragment_shader("../Shaders/2d.frag");
 	shader2d.create_vertex_shader("../Shaders/2d.vert");
-
-	// Accurate 
+	shader2d.link_shader_program();
 
 	// Wire-frame mode
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -71,9 +59,9 @@ int main() {
 
 
 	// Disable mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	/*glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
-		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);*/
 
 	while (glfwWindowShouldClose(window) == false &&
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
@@ -83,24 +71,16 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 
-		light1.direction = glm::normalize(glm::vec3(glm::cos(now * 2), glm::sin(now * 2), 0));
-		light2.direction = -glm::normalize(glm::vec3(glm::cos(now * 2), glm::sin(now * 2), 0));
-		// Rotate the world
-		//model = glm::rotate(model, delta_time, glm::vec3(0, 1, 0));
+		shader2d.set_uniform_mat4("ProjectionView", main_camera.get_projection_view());
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
 
-		// Update the camera
-		main_camera.update(delta_time);
-
 		// Turn shader on
 		glUseProgram(shader2d.get_shader_program_ID());
 
-		
-		square.draw(shader2d);
-
-
+		//square.draw(shader2d);
+		//triangle.draw(shader2d);
 
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

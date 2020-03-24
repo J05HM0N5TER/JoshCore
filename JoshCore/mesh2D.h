@@ -28,10 +28,10 @@ class mesh2D
 {
 private:
 	// The points in the mesh
-	std::vector<vertex2D> m_verticies;
-	std::vector<uint> m_indecies;
+	std::vector<vertex2D> m_verticies = std::vector<vertex2D>();
+	std::vector<uint> m_indecies = std::vector<uint>();
 	// Variables for drawing on screen
-	uint VAO, VBO, IBO = UINT_MAX;
+	uint VAO = UINT_MAX, VBO = UINT_MAX, IBO = UINT_MAX;
 
 	bool setup_complete = false;
 
@@ -40,11 +40,15 @@ public:
 	~mesh2D();
 	mesh2D(std::vector<vertex2D> verticies, std::vector<uint> indecies);
 	void setup_mesh();
-	void draw(shader& current_shader) const;
 	GLsizei get_verticies_length() const;
+	GLsizei get_indices_length() const;
 	const void* get_vertices() const;
+	const void* get_indices_array() const;
 	const std::vector<vertex2D>& get_verticies() const;
+	const std::vector<uint> get_indices() const;
 	void set_verticies(std::vector<vertex2D>& new_vertices);
+	void set_indices(std::vector<uint>& new_index_order);
+	void draw(shader& current_shader) const;
 };
 
 #endif // !MESH2D_H

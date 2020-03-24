@@ -15,8 +15,11 @@ mesh2D::~mesh2D()
 	}
 }
 
-mesh2D::mesh2D(std::vector<vertex2D> verticies, std::vector<uint> indecies) :
-	m_verticies{ verticies }, m_indecies{ indecies } {}
+mesh2D::mesh2D(std::vector<vertex2D> verticies, std::vector<uint> indecies)
+{
+	m_verticies = verticies;
+	m_indecies = indecies;
+}
 
 void mesh2D::setup_mesh()
 {
@@ -58,6 +61,15 @@ void mesh2D::setup_mesh()
 
 void mesh2D::draw(shader& current_shader) const
 {
+	if (!setup_complete)
+	{
+		throw std::runtime_error("Mesh not setup");
+	}
+	// Tell the GPU what set of data we are using
+	glBindVertexArray(VAO);
+
+	// Tell GPU to draw the m_verticies using the index buffer
+	glDrawElements(GL_TRIANGLES, get_indices_length(), GL_UNSIGNED_INT, 0);
 }
 
 GLsizei mesh2D::get_verticies_length() const
@@ -65,9 +77,19 @@ GLsizei mesh2D::get_verticies_length() const
 	return m_verticies.size();
 }
 
+GLsizei mesh2D::get_indices_length() const
+{
+	return m_indecies.size();
+}
+
 const void* mesh2D::get_vertices() const
 {
 	return (void*)&m_verticies[0];
+}
+
+const void* mesh2D::get_indices_array() const
+{
+	return (void*)&m_indecies[0];
 }
 
 const std::vector<vertex2D>& mesh2D::get_verticies() const
@@ -75,7 +97,17 @@ const std::vector<vertex2D>& mesh2D::get_verticies() const
 	return m_verticies;
 }
 
+const std::vector<uint> mesh2D::get_indices() const
+{
+	return m_indecies;
+}
+
 void mesh2D::set_verticies(std::vector<vertex2D>& new_vertices)
 {
 	m_verticies = new_vertices;
+}
+
+void mesh2D::set_indices(std::vector<uint>& new_indices)
+{
+	m_indecies = new_indices;
 }
