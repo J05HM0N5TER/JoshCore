@@ -17,8 +17,11 @@ public:
 	float get_time_step() const { return m_timeStep; }
 
 protected:
-	glm::vec2 m_gravity;
-	float m_timeStep;
-	std::vector<physics_object*> m_objects;
+	glm::vec2 m_gravity = glm::vec3(0.0f);
+	float m_timeStep = 0.16f;
+	std::vector<physics_object*> m_objects = std::vector<physics_object*>();
+
+private:
+	float accumulatedTime = 0.0f;
 };
 

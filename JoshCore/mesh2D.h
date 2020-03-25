@@ -9,8 +9,8 @@
 
 struct vertex2D
 {
-	vertex2D(glm::vec3 position, glm::vec4 colour)
-		: position{ position, 0 }, colour{ colour }
+	vertex2D(glm::vec2 position, glm::vec3 colour)
+		: position{ position, 0, 0 }, colour{ colour, 1 }
 	{	}
 
 	const static size_t position_size = sizeof(glm::vec4);
@@ -23,7 +23,6 @@ struct vertex2D
 	glm::vec4 colour;
 };
 
-
 class mesh2D
 {
 private:
@@ -31,7 +30,9 @@ private:
 	std::vector<vertex2D> m_verticies = std::vector<vertex2D>();
 	std::vector<uint> m_indecies = std::vector<uint>();
 	// Variables for drawing on screen
-	uint VAO = UINT_MAX, VBO = UINT_MAX, IBO = UINT_MAX;
+	uint VAO = UINT_MAX, 
+		VBO = UINT_MAX, 
+		IBO = UINT_MAX;
 
 	bool setup_complete = false;
 

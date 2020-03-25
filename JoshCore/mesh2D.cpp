@@ -39,11 +39,11 @@ void mesh2D::setup_mesh()
 
 	// Send vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex2D) * m_verticies.size(), get_vertices(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex2D) * get_verticies_length(), get_vertices(), GL_STATIC_DRAW);
 
 	// Send index order data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_indices_length() * sizeof(int), get_indices_array(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_indices_length() * sizeof(uint), get_indices_array(), GL_STATIC_DRAW);
 
 
 	// Set vertex settings
@@ -53,7 +53,7 @@ void mesh2D::setup_mesh()
 
 	// Colour
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(vertex2D), (void*)vertex2D::colour_offset);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex2D), (void*)vertex2D::colour_offset);
 
 	// Tell the GPU we are no longer sending it data
 	glBindVertexArray(0);

@@ -32,7 +32,6 @@ void physics_scene::remove_object(physics_object* a_object)
 void physics_scene::update(float dt)
 {
 	// update physics at a fixed time step
-	static float accumulatedTime = 0.0f;
 	accumulatedTime += dt;
 	while (accumulatedTime >= m_timeStep)
 	{

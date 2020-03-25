@@ -29,23 +29,12 @@ int main() {
 
 	/*** Create and 'load' mesh ***/
 
-	//mesh quad(
-	//	{
-	//		vertex({ -0.5f, 0,  0.5f }, { 0, 0, 1 }, { 0, 0 }),
-	//		vertex({  0.5f, 0,  0.5f }, { 0, 0, 1 }, { 1, 0 }),
-	//		vertex({ -0.5f, 0, -0.5f }, { 0, 0, 1 }, { 0, 1 }),
-	//		vertex({  0.5f, 0, -0.5f }, { 0, 0, 1 }, { 1, 1 })
-	//	},
-	//	{
-	//		1, 2, 0,	// first triangle
-	//		3, 2, 1		// second triangle
-	//	});
 	mesh2D quad(
 		{
-			vertex2D({ -0.5f, 0,  0.5f }, {0.5,0.5f,0.5f,1}),
-			vertex2D({  0.5f, 0,  0.5f }, {0.5,0.5f,0.5f,1}),
-			vertex2D({ -0.5f, 0, -0.5f }, {0.5,0.5f,0.5f,1}),
-			vertex2D({  0.5f, 0, -0.5f }, {0.5,0.5f,0.5f,1})
+			vertex2D({ -0.5f,  0.5f }, { 0.5, 0.5f, 0.5f }),
+			vertex2D({  0.5f,  0.5f }, { 0.5, 0.5f, 0.5f }),
+			vertex2D({ -0.5f, -0.5f }, { 0.5, 0.5f, 0.5f }),
+			vertex2D({  0.5f, -0.5f }, { 0.5, 0.5f, 0.5f })
 		},
 		{
 			1, 2, 0,	// first triangle
@@ -75,7 +64,7 @@ int main() {
 	shader2d.link_shader_program();
 
 	// Wire-frame mode
-	glPolygonMode(GL_BACK, GL_LINE);
+	//glPolygonMode(GL_BACK, GL_LINE);
 
 	// Set background colour
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -87,11 +76,16 @@ int main() {
 	// Used to work out delta-time.
 	double previous = glfwGetTime();
 
-
 	// Disable mouse
 	/*glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);*/
+	glm::mat4 p = glm::ortho(-16, 16, -9, 9);
+	glm::vec3 from = { 0,0,-1 };
+	glm::vec3 to = { 0,0,1 };
+	glm::vec3 up = { 0,1,0 };
+	glm::mat4 v = glm::lookAt(from, to, up);
+	glm::mat4 pv = p * v;
 
 	while (glfwWindowShouldClose(window) == false &&
 		glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
@@ -100,8 +94,8 @@ int main() {
 		double now = glfwGetTime();
 		float delta_time = float(now - previous);
 		previous = now;
-
-		shader2d.set_uniform_mat4("ProjectionView", main_camera.get_projection_view());
+		//shader2d.set_uniform_mat4("ProjectionView", main_camera.get_projection_view());
+		shader2d.set_uniform_mat4("ProjectionView", pv);
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
@@ -114,8 +108,8 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//square.draw(shader2d);
-		triangle.draw(shader2d);
-		//quad.draw(shader2d);
+		//triangle.draw(shader2d);
+		quad.draw(shader2d);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

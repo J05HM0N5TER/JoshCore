@@ -3,14 +3,13 @@
 mesh2D primitives2D::square(const glm::vec4& colour, float width, float height)
 {
 	glm::vec3 normal = { 0,0,-1 };
-	float z = 0;
 	float w = width / 2;
 	float h = height / 2;
 	std::vector<vertex2D> vectors;
-	vectors.push_back({ {-w, -h, z },colour });
-	vectors.push_back({ {-w, h, z }, colour });
-	vectors.push_back({ {w, -h, z }, colour });
-	vectors.push_back({ {w, h, z }, colour });
+	vectors.push_back({ {-w, -h },colour });
+	vectors.push_back({ {-w, h }, colour });
+	vectors.push_back({ {w, -h }, colour });
+	vectors.push_back({ {w, h }, colour });
 
 	std::vector<uint> buffer =
 	{
@@ -28,7 +27,6 @@ mesh2D primitives2D::circle(const glm::vec4& colour, float radius, int segments)
 	float previous_x, previous_y, x, y;
 	float angle;
 	float segment_size = 360.f / segments;
-	float z = 0;
 
 	previous_x = 0.5, previous_y = 0.6;
 
@@ -36,7 +34,7 @@ mesh2D primitives2D::circle(const glm::vec4& colour, float radius, int segments)
 	{
 		x = previous_x + sin(angle) * radius;
 		y = previous_y + cos(angle) * radius;
-		verticies.push_back({ { x, y, z }, colour });
+		verticies.push_back({ { x, y }, colour });
 	}
 
 	for (size_t i = 1; i < segments - 1; i++)
@@ -53,9 +51,9 @@ mesh2D primitives2D::triangle(const glm::vec4& colour, float height, float width
 {
 	float z = 0;
 	std::vector<vertex2D> verticies = std::vector<vertex2D>();
-	verticies.push_back({ {height / 2, 0, z}, colour });
-	verticies.push_back({ {-height / 2, -width / 2, z}, colour });
-	verticies.push_back({ {-height / 2, width / 2, z}, colour });
+	verticies.push_back({ { height / 2, 0 }, colour });
+	verticies.push_back({ { -height / 2, -width / 2}, colour });
+	verticies.push_back({ { -height / 2, width / 2 }, colour });
 	return mesh2D(verticies, { 0,1,2 });
 }
 
