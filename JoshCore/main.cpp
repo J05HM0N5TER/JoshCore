@@ -2,15 +2,26 @@
 #include <iostream>
 #include <time.h>
 #include "shader.h"
-#include "fly_camera.h"
-#include "mesh.h"
-#include "OBJMesh.h"
-#include "texture.h"
-#include "mesh2D.h"
-#include "primitives2D.h"
+#include <vector>
+//#include "fly_camera.h"
+//#include "mesh.h"
+//#include "OBJMesh.h"
+//#include "texture.h"
+//#include "mesh2D.h"
+//#include "primitives2D.h"
 
-void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal);
+//void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal);
 int glm_init(const char* window_name, size_t window_width, size_t window_height);
+
+struct tempVertex2D
+{
+	tempVertex2D(glm::vec2 position, glm::vec3 colour)
+		: position{ position, 0, 0 }, colour{ colour, 1 }
+	{	}
+
+	glm::vec4 position;
+	glm::vec4 colour;
+};
 
 struct light
 {
@@ -28,37 +39,37 @@ int main() {
 	GLFWwindow* window = glfwGetCurrentContext();
 
 	/*** Create and 'load' mesh ***/
+	/*
+	//mesh2D quad(
+	//	{
+	//		vertex2D({ -0.5f,  0.5f }, { 0.5, 0.5f, 0.5f }),
+	//		vertex2D({  0.5f,  0.5f }, { 0.5, 0.5f, 0.5f }),
+	//		vertex2D({ -0.5f, -0.5f }, { 0.5, 0.5f, 0.5f }),
+	//		vertex2D({  0.5f, -0.5f }, { 0.5, 0.5f, 0.5f })
+	//	},
+	//	{
+	//		1, 2, 0,	// first triangle
+	//		3, 2, 1		// second triangle
+	//	});
+	//quad.setup_mesh();
 
-	mesh2D quad(
-		{
-			vertex2D({ -0.5f,  0.5f }, { 0.5, 0.5f, 0.5f }),
-			vertex2D({  0.5f,  0.5f }, { 0.5, 0.5f, 0.5f }),
-			vertex2D({ -0.5f, -0.5f }, { 0.5, 0.5f, 0.5f }),
-			vertex2D({  0.5f, -0.5f }, { 0.5, 0.5f, 0.5f })
-		},
-		{
-			1, 2, 0,	// first triangle
-			3, 2, 1		// second triangle
-		});
-	quad.setup_mesh();
-
-	/*mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
-	square.setup_mesh();*/
-	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, 0.1/*Width*/, 0.1);
-	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, { -0.001,-0.01f,0 }, { 0,1.1f,0 }, { 1.001,0,0 });
-	glm::vec4 color = { 0.5f,0.5f,0.5f,1 };
-	std::vector<vertex2D> vertecies =
+	//mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
+	//square.setup_mesh();
+	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }Colour, 0.1Width, 0.1);
+	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }Colour, { -0.001,-0.01f,0 }, { 0,1.1f,0 }, { 1.001,0,0 });*/
+	glm::vec3 color = { 1.f,0.f,0.f };
+	std::vector<tempVertex2D> vertecies =
 	{
 		{{-0.5f, 0.f}, color},
 		{{0.f,0.5f}, color},
-		{{0.5f,0.f}, color}
+		{{0.5f,-0.0000f}, color}
 	};
 	std::vector<UINT> indecies =
 	{
 		0,1,2
 	};
-	UINT VAO, VBO, IBO;
 
+	UINT VAO, VBO, IBO;
 	// Get location to assign data to from GPU
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -68,21 +79,21 @@ int main() {
 	glBindVertexArray(VAO);
 	// Send vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex2D) * vertecies.size(), &vertecies[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tempVertex2D) * vertecies.size(), &vertecies[0], GL_STATIC_DRAW);
 
 	// Send index order data
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indecies.size() * sizeof(uint), &indecies[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indecies.size() * sizeof(UINT), &indecies[0], GL_STATIC_DRAW);
 
 
 	// Set vertex settings
 	// Position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(vertex2D), (void*)vertex2D::position_offset);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(tempVertex2D), 0);
 
 	// Colour
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex2D), (void*)vertex2D::colour_offset);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(tempVertex2D), (const void*)sizeof(glm::vec4));
 
 	// Tell the GPU we are no longer sending it data
 	glBindVertexArray(0);
@@ -90,12 +101,11 @@ int main() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//triangle.setup_mesh();
-	//Armageddon 
 
 	/** Camera **/
-	/*camera main_camera;
-	main_camera.set_ortho(-16, 16, -9, 9);
-	main_camera.set_look_at({ 0,0,-1 }, { 0,0,1 }, { 0,1,0 });*/
+	//camera main_camera;
+	//main_camera.set_ortho(-16, 16, -9, 9);
+	//main_camera.set_look_at({ 0,0,-1 }, { 0,0,1 }, { 0,1,0 });
 	//main_camera.set_position({ 0, 2, 2 });
 	//glm::mat4 model = glm::mat4(1.0f);
 	//main_camera.set_position({ 0,0,-1 });
@@ -118,14 +128,15 @@ int main() {
 	// Used to work out delta-time.
 	double previous = glfwGetTime();
 
-	// Disable mouse
-	/*glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	if (glfwRawMouseMotionSupported())
-		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);*/
+	//// Disable mouse
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//if (glfwRawMouseMotionSupported())
+	//	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	glm::vec3 from = { 0.f, 0.f, -10.f };
-	glm::vec3 to = { 0.f, 0.f, -1.f };
+	glm::vec3 to = { 0.f, 0.f, 1.f };
 	glm::vec3 up = { 0.f, 1.f, 0.f };
-	glm::mat4 p = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, 50.f);
+	//glm::mat4 p = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, 50.f);
+	glm::mat4 p = glm::perspective(1.5f, 16 / 9.0f, 1.f, 50.f);
 	glm::mat4 v = glm::lookAt(from, to, up);
 	glm::mat4 pv = p * v;
 
@@ -203,46 +214,46 @@ int glm_init(const char* window_name, size_t window_width, size_t window_height)
 	return 0;
 }
 
-void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal)
-{
-	// Get uniform ids
-	int program = -1;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-	int diffuseTexUniform = glGetUniformLocation(program, "diffuse_texture");
-	int normalTexUniform = glGetUniformLocation(program, "normal_texture");
-
-	// Set textures to an ID
-	if (diffuseTexUniform >= 0)
-		glUniform1i(diffuseTexUniform, 0);
-	if (normalTexUniform >= 0)
-		glUniform1i(normalTexUniform, 1);
-
-	// Bind textures to correct ID
-	glActiveTexture(GL_TEXTURE0);
-	if (diffuse->texture_id)
-		glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
-	else if (diffuseTexUniform >= 0)
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-
-	glActiveTexture(GL_TEXTURE1);
-	if (normal->texture_id)
-		glBindTexture(GL_TEXTURE_2D, normal->texture_id);
-	else if (normalTexUniform >= 0)
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-	/* Simplified view of texture binding
-	// Specifying what texture I am setting
-	glActiveTexture(GL_TEXTURE0);
-	// Set texture
-	glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, normal->texture_id);
-	*/
-
-	// Draw on screen
-	current_mesh.Bind();
-	glDrawElements(GL_TRIANGLES, current_mesh.indexCount, GL_UNSIGNED_INT, 0);
-	current_mesh.Unbind();
-}
+//void draw(aie::MeshChunk& current_mesh, shader* current_shader, texture* diffuse, texture* normal)
+//{
+//	// Get uniform ids
+//	int program = -1;
+//	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+//	int diffuseTexUniform = glGetUniformLocation(program, "diffuse_texture");
+//	int normalTexUniform = glGetUniformLocation(program, "normal_texture");
+//
+//	// Set textures to an ID
+//	if (diffuseTexUniform >= 0)
+//		glUniform1i(diffuseTexUniform, 0);
+//	if (normalTexUniform >= 0)
+//		glUniform1i(normalTexUniform, 1);
+//
+//	// Bind textures to correct ID
+//	glActiveTexture(GL_TEXTURE0);
+//	if (diffuse->texture_id)
+//		glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
+//	else if (diffuseTexUniform >= 0)
+//		glBindTexture(GL_TEXTURE_2D, 0);
+//
+//
+//	glActiveTexture(GL_TEXTURE1);
+//	if (normal->texture_id)
+//		glBindTexture(GL_TEXTURE_2D, normal->texture_id);
+//	else if (normalTexUniform >= 0)
+//		glBindTexture(GL_TEXTURE_2D, 0);
+//
+//	/* Simplified view of texture binding
+//	// Specifying what texture I am setting
+//	glActiveTexture(GL_TEXTURE0);
+//	// Set texture
+//	glBindTexture(GL_TEXTURE_2D, diffuse->texture_id);
+//
+//	glActiveTexture(GL_TEXTURE1);
+//	glBindTexture(GL_TEXTURE_2D, normal->texture_id);
+//	*/
+//
+//	// Draw on screen
+//	current_mesh.Bind();
+//	glDrawElements(GL_TRIANGLES, current_mesh.indexCount, GL_UNSIGNED_INT, 0);
+//	current_mesh.Unbind();
+//}
