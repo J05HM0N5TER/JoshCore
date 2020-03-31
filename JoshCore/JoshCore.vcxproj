@@ -193,6 +193,12 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\2d.frag" />
+    <None Include="..\Shaders\2d.vert" />
+    <None Include="..\Shaders\phong.frag" />
+    <None Include="..\Shaders\phong.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

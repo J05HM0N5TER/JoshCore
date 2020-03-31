@@ -3,6 +3,14 @@
 #include <list>
 #include <cstdio>
 #include "rigid_body.h"
+#include "Collision_manager.h"
+
+const collision_function physics_scene::collision_functions[] =
+{
+	collision_manager::circle_vs_circle, collision_manager::circle_vs_aabb, collision_manager::circle_vs_line,
+	collision_manager::aabb_vs_circle, collision_manager::aabb_vs_aabb, collision_manager::aabb_vs_line,
+	collision_manager::line_vs_circle, collision_manager::line_vs_aabb, collision_manager::line_vs_line
+};
 
 physics_scene::physics_scene()
 {
@@ -49,6 +57,8 @@ void physics_scene::update(float dt)
 	{
 		for (auto other_object : m_objects)
 		{
+
+
 			if (object == other_object)
 				continue;
 
@@ -68,6 +78,11 @@ void physics_scene::update(float dt)
 
 		}
 	}
+
+	//for (int outer = 0; outer < obje; outer++)
+	//{
+
+	//}
 
 	dirty.clear();
 }

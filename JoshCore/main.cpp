@@ -45,18 +45,60 @@ int main() {
 	/*mesh2D square = primitives2D::square({0.5f,0.5f,0.5f,1.f});
 	square.setup_mesh();*/
 	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, 0.1/*Width*/, 0.1);
-	mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, { -0.001,-0.001,0 }, { 0,0.001f,0 }, { 0.001,0,0 });
+	//mesh2D triangle = primitives2D::triangle({ 0.5f,0.5f,0.5f,1 }/*Colour*/, { -0.001,-0.01f,0 }, { 0,1.1f,0 }, { 1.001,0,0 });
+	glm::vec4 color = { 0.5f,0.5f,0.5f,1 };
+	std::vector<vertex2D> vertecies =
+	{
+		{{-0.5f, 0.f}, color},
+		{{0.f,0.5f}, color},
+		{{0.5f,0.f}, color}
+	};
+	std::vector<UINT> indecies =
+	{
+		0,1,2
+	};
+	UINT VAO, VBO, IBO;
 
-	triangle.setup_mesh();
+	// Get location to assign data to from GPU
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	// Tell GPU what set the following data belongs to
+	glBindVertexArray(VAO);
+	// Send vertex data
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex2D) * vertecies.size(), &vertecies[0], GL_STATIC_DRAW);
+
+	// Send index order data
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indecies.size() * sizeof(uint), &indecies[0], GL_STATIC_DRAW);
+
+
+	// Set vertex settings
+	// Position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(vertex2D), (void*)vertex2D::position_offset);
+
+	// Colour
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex2D), (void*)vertex2D::colour_offset);
+
+	// Tell the GPU we are no longer sending it data
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	//triangle.setup_mesh();
 	//Armageddon 
 
 	/** Camera **/
-	camera main_camera;
+	/*camera main_camera;
 	main_camera.set_ortho(-16, 16, -9, 9);
-	main_camera.set_look_at({ 0,0,-1 }, { 0,0,1 }, { 0,1,0 });
+	main_camera.set_look_at({ 0,0,-1 }, { 0,0,1 }, { 0,1,0 });*/
 	//main_camera.set_position({ 0, 2, 2 });
-	glm::mat4 model = glm::mat4(1.0f);
-	main_camera.set_position({ 0,0,-1 });
+	//glm::mat4 model = glm::mat4(1.0f);
+	//main_camera.set_position({ 0,0,-1 });
 
 	shader shader2d;
 	shader2d.create_fragment_shader("../Shaders/2d.frag");
@@ -70,8 +112,8 @@ int main() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	/*glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);*/
 
 	// Used to work out delta-time.
 	double previous = glfwGetTime();
@@ -80,10 +122,10 @@ int main() {
 	/*glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);*/
-	glm::mat4 p = glm::ortho(-16, 16, -9, 9);
-	glm::vec3 from = { 0,0,-1 };
-	glm::vec3 to = { 0,0,1 };
-	glm::vec3 up = { 0,1,0 };
+	glm::vec3 from = { 0.f, 0.f, -10.f };
+	glm::vec3 to = { 0.f, 0.f, -1.f };
+	glm::vec3 up = { 0.f, 1.f, 0.f };
+	glm::mat4 p = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, 50.f);
 	glm::mat4 v = glm::lookAt(from, to, up);
 	glm::mat4 pv = p * v;
 
@@ -95,7 +137,7 @@ int main() {
 		float delta_time = float(now - previous);
 		previous = now;
 		//shader2d.set_uniform_mat4("ProjectionView", main_camera.get_projection_view());
-		shader2d.set_uniform_mat4("ProjectionView", pv);
+		shader2d.set_uniform_mat4("ProjectionView",  pv);
 
 		// The colour for the meshes
 		glm::vec4 color = glm::vec4(0.5f);
@@ -107,9 +149,11 @@ int main() {
 		// Clear screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//square.draw(shader2d);
-		//triangle.draw(shader2d);
-		quad.draw(shader2d);
+		// Tell the GPU what set of data we are using
+		glBindVertexArray(VAO);
+
+		// Tell GPU to draw the m_verticies using the index buffer
+		glDrawElements(GL_TRIANGLES, indecies.size(), GL_UNSIGNED_INT, 0);
 
 		// Tell GPU to display what it just calculated
 		glfwSwapBuffers(window);

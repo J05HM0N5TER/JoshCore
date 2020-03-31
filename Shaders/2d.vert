@@ -1,11 +1,12 @@
-#version 150
+#version 450
 
-in vec4 Position; 
-in vec4 Colour; 
+layout(location = 0) in vec4 Position; 
+layout(location = 1) in vec4 Colour; 
 out vec4 vColour; 
 uniform mat4 ProjectionView; 
 
 void main() 
 { 
-	vColour = Colour; gl_Position = ProjectionView * Position; 
+	vColour = Colour; 
+	gl_Position = ProjectionView * Position; 
 }

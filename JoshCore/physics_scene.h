@@ -1,5 +1,9 @@
 #pragma once
 #include "physics_object.h"
+#include <functional>
+	using collision_function = std::function<glm::vec2(const physics_object*, const physics_object*)>;
+
+
 class physics_scene
 {
 public:
@@ -23,5 +27,9 @@ protected:
 
 private:
 	float accumulatedTime = 0.0f;
+
+
+	static const collision_function collision_functions[];
+
 };
 

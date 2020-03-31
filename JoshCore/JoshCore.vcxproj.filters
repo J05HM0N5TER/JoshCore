@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{418cf394-66a5-44a8-bb5c-1acedb207519}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,5 +116,19 @@
     <ClInclude Include="Collision_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\phong.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\phong.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\2d.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\2d.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

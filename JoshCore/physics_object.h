@@ -7,7 +7,8 @@ enum class shape : char
 {
 	circle = 0,
 	aabb,
-	line
+	line,
+	count
 };
 
 class physics_object
